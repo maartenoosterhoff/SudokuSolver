@@ -1,110 +1,54 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SudokuSolver.Core.Model
 {
-    public class BitSet
+    public class BitSet : ValueCollection<bool>
     {
-        public int Length { get; }
+        public BitSet(int length, bool defaultValue) : base(length, defaultValue) { }
+        public BitSet(IEnumerable<bool> setValues) : base(setValues) { }
 
-        private bool[] _set;
-
-        public BitSet(int length, bool defaultValue)
+        protected override ValueCollection<bool> AndOperator(ValueCollection<bool> other)
         {
-            Length = length;
-            _set = Enumerable.Range(0, length).Select(x => defaultValue).ToArray();
-        }
-
-        public bool this[int index]
-        {
-            get
+            var result = new BitSet(Length, false);
+            for (var i = 0; i < Length; i++)
             {
-                if (index < 0 || index >= Length)
-                    throw new ArgumentOutOfRangeException(nameof(index));
-
-                return _set[index];
+                result[i] = this[i] & other[i];
             }
-            set
-            {
-                if (index < 0 || index >= Length)
-                    throw new ArgumentOutOfRangeException(nameof(index));
+            return result;
+        }
 
-                _set[index] = value;
+        protected override ValueCollection<bool> OrOperator(ValueCollection<bool> other)
+        {
+            var result = new BitSet(Length, false);
+            for (var i = 0; i < Length; i++)
+            {
+                result[i] = this[i] | other[i];
             }
+            return result;
         }
 
-        public int Count
+        protected override ValueCollection<bool> XOrOperator(ValueCollection<bool> other)
         {
-            get { return _set.Count(x => x); }
-        }
-
-        public bool IsEmpty
-        {
-            get { return Count == 0; }
-        }
-
-        public static BitSet operator &(BitSet setA, BitSet setB)
-        {
-            if (setA == null)
-                throw new ArgumentNullException(nameof(setA));
-            if (setB == null)
-                throw new ArgumentNullException(nameof(setB));
-            if (setA.Length != setB.Length)
-                throw new ArgumentException("Length of bitset B should be identical to the length of bitset A.", nameof(setB));
-
-            var setC = new BitSet(setA.Length, false);
-            for (var i = 0; i < setA.Length; i++)
+            var result = new BitSet(Length, false);
+            for (var i = 0; i < Length; i++)
             {
-                setC[i] = setA[i] & setB[i];
+                result[i] = this[i] ^ other[i];
             }
-            return setC;
+            return result;
         }
 
-        public static BitSet operator |(BitSet setA, BitSet setB)
+        protected override ValueCollection<bool> NotOperator()
         {
-            if (setA == null)
-                throw new ArgumentNullException(nameof(setA));
-            if (setB == null)
-                throw new ArgumentNullException(nameof(setB));
-            if (setA.Length != setB.Length)
-                throw new ArgumentException("Length of bitset B should be identical to the length of bitset A.", nameof(setB));
-
-            var setC = new BitSet(setA.Length, false);
-            for (var i = 0; i < setA.Length; i++)
+            var setC = new BitSet(Length, false);
+            for (var i = 0; i < Length; i++)
             {
-                setC[i] = setA[i] | setB[i];
-            }
-            return setC;
-        }
-
-        public static BitSet operator ^(BitSet setA, BitSet setB)
-        {
-            if (setA == null)
-                throw new ArgumentNullException(nameof(setA));
-            if (setB == null)
-                throw new ArgumentNullException(nameof(setB));
-            if (setA.Length != setB.Length)
-                throw new ArgumentException("Length of bitset B should be identical to the length of bitset A.", nameof(setB));
-
-            var setC = new BitSet(setA.Length, false);
-            for (var i = 0; i < setA.Length; i++)
-            {
-                setC[i] = setA[i] ^ setB[i];
-            }
-            return setC;
-        }
-
-        public static BitSet operator !(BitSet set)
-        {
-            if (set == null)
-                throw new ArgumentNullException(nameof(set));
-
-            var setC = new BitSet(set.Length, false);
-            for (var i = 0; i < set.Length; i++)
-            {
-                setC[i] = !set[i];
+                setC[i] = !this[i];
             }
             return setC;
         }
     }
+
+    
 }
