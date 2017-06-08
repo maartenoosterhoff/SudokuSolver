@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SudokuSolver.Core.Model
 {
@@ -8,5 +6,6 @@ namespace SudokuSolver.Core.Model
     {
         public string Name { get; }
         public List<Cell> Cells { get; }
+
     }
 }

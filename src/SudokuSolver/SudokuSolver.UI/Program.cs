@@ -14,6 +14,7 @@ namespace SudokuSolver.UI
             //set[10] = false;
             Console.WriteLine("Hello World!");
             Console.ReadLine();
+
         }
     }
 }

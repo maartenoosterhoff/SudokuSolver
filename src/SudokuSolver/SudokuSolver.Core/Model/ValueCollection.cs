@@ -98,5 +98,6 @@ namespace SudokuSolver.Core.Model
 
             return set.NotOperator();
         }
+
     }
 }
