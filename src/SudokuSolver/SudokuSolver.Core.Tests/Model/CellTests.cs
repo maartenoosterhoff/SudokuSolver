@@ -10,6 +10,5 @@ namespace SudokuSolver.Core.Tests.Model
         {
             Assert.IsTrue(true);
         }
-
     }
 }
