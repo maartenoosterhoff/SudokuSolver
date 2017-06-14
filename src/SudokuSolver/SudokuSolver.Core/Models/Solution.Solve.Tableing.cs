@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
     partial class Solution
     {

@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
     /// <summary>
     /// Class used to represent a group of cells in a sudoku, which for example can be a row, column or block
     /// in a classic sudoku.
     /// </summary>
-    class Group
+    public class Group
     {
         #region Properties
 
@@ -64,6 +64,14 @@ namespace SudokuSolver.Core
             Name = name;
             _cells = new List<int>();
         }
+
+        public Group(int id, string name, IEnumerable<int> cellIds)
+        {
+            Id = id;
+            Name = name;
+            _cells = cellIds.ToList();
+        }
+
         #endregion
 
         /// <summary>
@@ -112,12 +120,6 @@ namespace SudokuSolver.Core
         public bool HasOverlapWithGroup(Group A)
         {
             return Cells.Any(c => A.Cells.Contains(c));
-
-            //var hasOverlap = false;
-            //for (var i = 0; i < Cells.Count && !hasOverlap; i++)
-            //    if (A.Cells.Contains(Cells[i]))
-            //        hasOverlap = true;
-            //return hasOverlap;
         }
     }
 }

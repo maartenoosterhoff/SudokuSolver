@@ -1,4 +1,4 @@
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
     /// <summary>
     /// Class used to solve a sudoku.

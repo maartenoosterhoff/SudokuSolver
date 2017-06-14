@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
     /// <summary>
     /// Class used to handle all functions related to a candidate.

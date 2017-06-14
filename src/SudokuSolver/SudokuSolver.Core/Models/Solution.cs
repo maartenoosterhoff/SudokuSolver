@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
     enum SudokuState
     {

@@ -41,26 +41,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\BitLayer.cs" />
-    <Compile Include="Model\Candidate.cs" />
-    <Compile Include="Model\Cell.cs" />
-    <Compile Include="Model\CellSorter.cs" />
-    <Compile Include="Model\Engine.cs" />
-    <Compile Include="Model\Group.cs" />
-    <Compile Include="Model\Solution.cs" />
-    <Compile Include="Model\Solution.MiscFunctions.cs" />
-    <Compile Include="Model\Solution.Solve.AlignedPairExclusion.cs" />
-    <Compile Include="Model\Solution.Solve.HiddenDouble.cs" />
-    <Compile Include="Model\Solution.Solve.HiddenSingle.cs" />
-    <Compile Include="Model\Solution.Solve.LockedCandidate.cs" />
-    <Compile Include="Model\Solution.Solve.NakedDouble.cs" />
-    <Compile Include="Model\Solution.Solve.NakedSingle.cs" />
-    <Compile Include="Model\Solution.Solve.Tableing.cs" />
-    <Compile Include="Model\Solution.Solve.XWing.cs" />
-    <Compile Include="Model\Solution.Solve.XWingPro.cs" />
-    <Compile Include="Model\Solution.Solve._methods.cs" />
-    <Compile Include="Model\Solution.SudokuTypes.cs" />
-    <Compile Include="Model\SolutionStep.cs" />
+    <Compile Include="Extensions\EnumerableOfTExtensions.cs" />
+    <Compile Include="Models\BitLayer.cs" />
+    <Compile Include="Models\Candidate.cs" />
+    <Compile Include="Models\Cell.cs" />
+    <Compile Include="Models\CellSorter.cs" />
+    <Compile Include="Models\Engine.cs" />
+    <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\Solution.cs" />
+    <Compile Include="Models\Solution.MiscFunctions.cs" />
+    <Compile Include="Models\Solution.Solve.AlignedPairExclusion.cs" />
+    <Compile Include="Models\Solution.Solve.HiddenDouble.cs" />
+    <Compile Include="Models\Solution.Solve.HiddenSingle.cs" />
+    <Compile Include="Models\Solution.Solve.LockedCandidate.cs" />
+    <Compile Include="Models\Solution.Solve.NakedDouble.cs" />
+    <Compile Include="Models\Solution.Solve.NakedSingle.cs" />
+    <Compile Include="Models\Solution.Solve.Tableing.cs" />
+    <Compile Include="Models\Solution.Solve.XWing.cs" />
+    <Compile Include="Models\Solution.Solve.XWingPro.cs" />
+    <Compile Include="Models\Solution.Solve._methods.cs" />
+    <Compile Include="Models\Solution.SudokuTypes.cs" />
+    <Compile Include="Models\SolutionStep.cs" />
+    <Compile Include="Models\SudokuParser.cs" />
+    <Compile Include="Models\SudokuType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

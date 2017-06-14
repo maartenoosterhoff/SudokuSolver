@@ -2,18 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
-    /// <summary>
-    /// The different types of sudoku.
-    /// </summary>
-    public enum SudokuType
-    {
-        CLASSIC9BY9,
-        CLASSICPLUS4BLOCKS,
-        SUDOKU16BY16,
-        XSUDOKU
-    }
 
     partial class Solution
     {
@@ -25,11 +15,11 @@ namespace SudokuSolver.Core
             switch (_sudokuType) {
 
                 // The classic 9x9 sudoku
-                case SudokuType.CLASSIC9BY9:
+                case SudokuType.Classic9by9:
                 // The classic 9x9 sudoku plus 4 3x3 blocks
-                case SudokuType.CLASSICPLUS4BLOCKS:
+                case SudokuType.Classic9by9Plus4:
                 // The 9x9 Sudoku with the diagonals included
-                case SudokuType.XSUDOKU:
+                case SudokuType.XSudoku:
 
                     Candidate.PossibleCandidateCount = 9;
                     Dimension = 81;
@@ -42,7 +32,7 @@ namespace SudokuSolver.Core
                     }
 
                     break;
-                case SudokuType.SUDOKU16BY16:
+                case SudokuType.Sudoku16by16:
                     Candidate.PossibleCandidateCount = 16;
                     Dimension = 16 * 16;
                     _cellList = new Cell[Dimension];
@@ -73,14 +63,14 @@ namespace SudokuSolver.Core
             _groupList = new List<Group>();
 
             switch (_sudokuType) {
-                case SudokuType.CLASSIC9BY9:
-                case SudokuType.CLASSICPLUS4BLOCKS:
-                case SudokuType.XSUDOKU:
+                case SudokuType.Classic9by9:
+                case SudokuType.Classic9by9Plus4:
+                case SudokuType.XSudoku:
                     dim = 9;
                     dimBlock = 3;
 
                     break;
-                case SudokuType.SUDOKU16BY16:
+                case SudokuType.Sudoku16by16:
                     dim = 16;
                     dimBlock = 4;
                     break;
@@ -90,8 +80,8 @@ namespace SudokuSolver.Core
                     break;
             }
 
-            if (_sudokuType == SudokuType.CLASSIC9BY9 || _sudokuType == SudokuType.CLASSICPLUS4BLOCKS ||
-                _sudokuType == SudokuType.SUDOKU16BY16 || _sudokuType == SudokuType.XSUDOKU) {
+            if (_sudokuType == SudokuType.Classic9by9 || _sudokuType == SudokuType.Classic9by9Plus4 ||
+                _sudokuType == SudokuType.Sudoku16by16 || _sudokuType == SudokuType.XSudoku) {
 
                 // Rows
                 for (int r = 0; r < dim; r++) {
@@ -124,7 +114,7 @@ namespace SudokuSolver.Core
                     }
                 }
             }
-            if (_sudokuType == SudokuType.CLASSICPLUS4BLOCKS) {
+            if (_sudokuType == SudokuType.Classic9by9Plus4) {
                 g = new Group(gId++, "B22");
                 for (int r = 1; r < 4; r++)
                     for (int c = 1; c < 4; c++)
@@ -146,7 +136,7 @@ namespace SudokuSolver.Core
                         g.AddCell(_cellList[(r * dim) + c].ID);
                 _groupList.Add(g);
             }
-            if (_sudokuType == SudokuType.XSUDOKU) {
+            if (_sudokuType == SudokuType.XSudoku) {
                 g = new Group(gId++, "D1");
                 for (int i = 0; i < dim; i++) {
                     g.AddCell(_cellList[(i * dim) + i].ID);
@@ -174,9 +164,9 @@ namespace SudokuSolver.Core
             int candidateCount;
 
             switch (_sudokuType) {
-                case SudokuType.CLASSIC9BY9:
-                case SudokuType.CLASSICPLUS4BLOCKS:
-                case SudokuType.XSUDOKU:
+                case SudokuType.Classic9by9:
+                case SudokuType.Classic9by9Plus4:
+                case SudokuType.XSudoku:
                     max = -1;
                     foreach (Cell c in _cellList)
                         if (c.CandidateCount() > max) max = c.CandidateCount();
@@ -229,7 +219,7 @@ namespace SudokuSolver.Core
                     }
                     break;
 
-                case SudokuType.SUDOKU16BY16:
+                case SudokuType.Sudoku16by16:
                     max = -1;
                     foreach (Cell c in _cellList)
                         if (c.CandidateCount() > max) max = c.CandidateCount();

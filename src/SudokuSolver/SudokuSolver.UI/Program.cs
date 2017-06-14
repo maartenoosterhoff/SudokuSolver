@@ -1,5 +1,5 @@
 ﻿using System;
-using SudokuSolver.Core;
+using SudokuSolver.Core.Models;
 
 namespace SudokuSolver.UI
 {
@@ -7,7 +7,7 @@ namespace SudokuSolver.UI
     {
         static void Main(string[] args)
         {
-            SudokuSolverEngine e = new SudokuSolverEngine(SudokuType.CLASSIC9BY9);
+            SudokuSolverEngine e = new SudokuSolverEngine(SudokuType.Classic9by9);
             e.ParseSudokuString("_2_____7_9__5_8__4_________4___3___8_7__9__2_6___1___5_________5__6_4__1_3_____9_");
             e.Visualize();
             e.Solve();

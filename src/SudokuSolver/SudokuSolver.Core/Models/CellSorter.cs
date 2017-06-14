@@ -1,6 +1,6 @@
 using System;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
     class CellSorter: IComparable
     {

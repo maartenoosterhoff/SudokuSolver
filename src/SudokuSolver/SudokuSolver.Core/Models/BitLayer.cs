@@ -1,11 +1,11 @@
 using System.Linq;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
     /// <summary>
     /// Class used to represent a part of a sudoku. It has overloaded operators for easy bitwise functions.
     /// </summary>
-    class BitLayer
+    public class BitLayer
     {
         #region Properties
         //private bool[] Layer;

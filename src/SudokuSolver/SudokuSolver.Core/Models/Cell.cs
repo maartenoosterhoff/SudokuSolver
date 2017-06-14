@@ -1,11 +1,11 @@
 using System.Linq;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
     /// <summary>
     /// Class used to represent a single cell in a sudoku. Has properties like value and candidates.
     /// </summary>
-    class Cell
+    public class Cell
     {
         #region Properties
         //private int _id;

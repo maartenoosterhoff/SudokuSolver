@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Models
 {
     partial class Solution
     {
