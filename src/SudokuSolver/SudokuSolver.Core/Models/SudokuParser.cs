@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using SudokuSolver.Core.Extensions;
 
@@ -28,29 +29,25 @@ namespace SudokuSolver.Core.Models
     }
     public class SudokuParser : ISudokuParser
     {
+        private static readonly IReadOnlyDictionary<SudokuType, int> SudokuTypeToCandidateCountMapper = new ReadOnlyDictionary<SudokuType, int>(
+            new Dictionary<SudokuType, int>
+            {
+                { SudokuType.Classic9by9, 9 },
+                { SudokuType.Classic9by9Plus4, 9 },
+                { SudokuType.XSudoku, 9 },
+                { SudokuType.Sudoku16by16, 16 }
+            }
+        );
+
         public SudokuBoard Parse(SudokuType sudokuType, string sudoku)
         {
             if (!Enum.IsDefined(typeof(SudokuType), sudokuType))
                 throw new ArgumentException("Parameter sudokuType should have a valid enum value.", nameof(sudokuType));
 
-            var candidateCount = 0;
+            if (!SudokuTypeToCandidateCountMapper.ContainsKey(sudokuType))
+                throw new ArgumentException("Unknown Sudokutype!", nameof(sudokuType));
 
-            switch (sudokuType)
-            {
-                // The classic 9x9 sudoku
-                case SudokuType.Classic9by9:
-                // The classic 9x9 sudoku plus 4 3x3 blocks
-                case SudokuType.Classic9by9Plus4:
-                // The 9x9 Sudoku with the diagonals included
-                case SudokuType.XSudoku:
-                    candidateCount = 9;
-                    break;
-                case SudokuType.Sudoku16by16:
-                    candidateCount = 16;
-                    break;
-                default:
-                    throw new InvalidOperationException("Unknown Sudokutype!");
-            }
+            var candidateCount = SudokuTypeToCandidateCountMapper[sudokuType];
 
             var cellCount = candidateCount * candidateCount;
             var cells = Enumerable.Range(0, cellCount)
