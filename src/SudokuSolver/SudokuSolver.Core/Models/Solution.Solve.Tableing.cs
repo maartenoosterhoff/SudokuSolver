@@ -24,7 +24,7 @@ namespace SudokuSolver.Core.Models
             var step = new SolutionStep(false);
 
             var sortedCells = from c in _cellList
-                                 let candidateCount = c.CandidateCount()
+                                 let candidateCount = c.CurrentCandidateCount()
                                  where candidateCount > 1
                                  orderby candidateCount, c.ID                                 
                                  select new CellSorter(c.ID, candidateCount);

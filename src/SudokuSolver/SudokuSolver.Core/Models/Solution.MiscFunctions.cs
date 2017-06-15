@@ -146,7 +146,7 @@ namespace SudokuSolver.Core.Models
         /// <param name="baseLayer">The baselayer with the cells to alter</param>
         public void SetCandidateLayerWithBase(int candidate, bool value, BitLayer baseLayer)
         {
-            if (!baseLayer.EqualToSolutionDimension)
+            if (baseLayer.Dimension != Dimension)
                 throw new Exception("Baselayer dimension is not equal to the solution dimension!");
 
             foreach (var c in _cellList)
@@ -165,7 +165,7 @@ namespace SudokuSolver.Core.Models
         /// <param name="baseLayer">The baselayer</param>
         public void SetCellWithBase(int value, BitLayer baseLayer)
         {
-            if (!baseLayer.EqualToSolutionDimension)
+            if (baseLayer.Dimension != Dimension)
                 throw new Exception("Baselayer dimension is not equal to the solution dimension!");
 
             foreach (var c in _cellList)
@@ -185,7 +185,7 @@ namespace SudokuSolver.Core.Models
         /// <returns>The string with the cells</returns>
         public string YieldCells(BitLayer A)
         {
-            if (!A.EqualToSolutionDimension)
+            if (A.Dimension != Dimension)
                 throw new Exception("Bitlayer dimension is not equal to the solution dimension!");
 
             string cells = string.Empty;

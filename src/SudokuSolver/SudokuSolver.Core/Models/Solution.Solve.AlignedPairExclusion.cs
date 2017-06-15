@@ -62,7 +62,7 @@ namespace SudokuSolver.Core.Models
                     if (outLayer.Layer[lp])
                     {
                         var cell = _cellList[lp];
-                        if (cell.CandidateCount() == 2)
+                        if (cell.CurrentCandidateCount() == 2)
                         {
                             var n1 = Candidate.NotSet;
                             var n2 = Candidate.NotSet;
@@ -123,10 +123,10 @@ namespace SudokuSolver.Core.Models
         private Tuple<int[], int[]> TryAlignedPairExclusion_Populate(BitLayer source)
         {
             var data = from c1 in Enumerable.Range(0, source.Dimension)
-                       where source.Layer[c1] && _cellList[c1].CandidateCount() >= 2
+                       where source.Layer[c1] && _cellList[c1].CurrentCandidateCount() >= 2
                        from c2 in Enumerable.Range(c1 + 1, source.Dimension)
                        where c2 < source.Dimension  // TODO: calculate the iteration-length better so this criteria can be omitted, original for statement: for (int c2 = c1 + 1; c2 < source.Dimension; c2++)
-                       where source.Layer[c2] && _cellList[c2].CandidateCount() >= 2
+                       where source.Layer[c2] && _cellList[c2].CurrentCandidateCount() >= 2
                        select new { c1, c2 };
 
             return Tuple.Create(

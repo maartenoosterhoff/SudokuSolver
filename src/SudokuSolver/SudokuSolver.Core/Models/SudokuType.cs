@@ -1,4 +1,6 @@
-﻿namespace SudokuSolver.Core.Models
+﻿using System;
+
+namespace SudokuSolver.Core.Models
 {
     /// <summary>
     /// The different types of sudoku.
@@ -9,5 +11,9 @@
         Classic9by9Plus4,
         Sudoku16by16,
         XSudoku
+    }
+
+    public class SudokuTypeAttribute : Attribute {
+        public SudokuType SudokuType { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 namespace SudokuSolver.Core.Models
@@ -31,6 +32,7 @@ namespace SudokuSolver.Core.Models
         /// <summary>
         /// Boolean-value indicating if the dimension of this BitLayer is equal to the dimension of the Solution
         /// </summary>
+        [Obsolete("Do not use",true)]
         public bool EqualToSolutionDimension
         {
             get { return Dimension == Solution.Dimension; }

@@ -30,7 +30,7 @@ namespace SudokuSolver.Core.Models
             if (!step.StepTaken) step = TryXWing(); // XWing as one of the lasts, because it is heavy...
             
 
-            if (!step.StepTaken) _sudokuState = SudokuState.UNSOLVABLE;
+            if (!step.StepTaken) _sudokuState = SudokuState.Unsolvable;
             
             return step;
         }

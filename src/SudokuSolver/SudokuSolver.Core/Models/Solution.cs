@@ -4,11 +4,6 @@ using System.Text;
 
 namespace SudokuSolver.Core.Models
 {
-    enum SudokuState
-    {
-        RESET, SOLVED, UNSOLVED, BROKEN, UNSOLVABLE
-    }
-    
     /// <summary>
     /// Class used to represent a single solution of a sudoku.
     /// </summary>
@@ -101,11 +96,11 @@ namespace SudokuSolver.Core.Models
             }
 
             if (!emptyCell && !doubleValue)
-                _sudokuState = SudokuState.SOLVED;
+                _sudokuState = SudokuState.Solved;
             else if (doubleValue)
-                _sudokuState = SudokuState.BROKEN;
+                _sudokuState = SudokuState.Broken;
             else if (emptyCell)
-                _sudokuState = SudokuState.UNSOLVED;
+                _sudokuState = SudokuState.Unsolved;
         }
     }
 }

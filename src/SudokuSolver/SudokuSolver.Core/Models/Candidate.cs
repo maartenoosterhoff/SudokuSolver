@@ -37,52 +37,30 @@ namespace SudokuSolver.Core.Models
         public static bool[] GetAllCandidates()
         {
             return Enumerable.Range(0, PossibleCandidateCount).Select(x => true).ToArray();
-            //var a = new bool[Candidate.PossibleCandidateCount];
-            //for (var v = 0; v < Candidate.PossibleCandidateCount; v++)
-            //{
-            //    a[v] = true;
-            //}
-            //return a;
         }
 
-        /// <summary>
-        /// Returns an array of booleans, representing the candidates with all candidates signed as False,
-        /// indicating they are unavailable.
-        /// </summary>
-        /// <returns>An array of booleans</returns>
         public static bool[] GetNoCandidates()
         {
             return Enumerable.Range(0, PossibleCandidateCount).Select(x => false).ToArray();
-            //var a = new bool[Candidate.PossibleCandidateCount];
-            //for (var v = 0; v < Candidate.PossibleCandidateCount; v++)
-            //{
-            //    a[v] = false;
-            //}
-            //return a;
         }
 
-        /// <summary>
-        /// Parses a printvalue of a candidate to an internal candidatevalue.
-        /// </summary>
-        /// <param name="p">The printvalue of a candidate</param>
-        /// <returns>The internal candidatevalue</returns>
-        public static int Parse(char p)
-        {
-            int v = NotSet;
-            if (p >= '0' && p <= '9')
-            {
-                v = p - '0';
-                if (!(v >= 1 && v <= PossibleCandidateCount))
-                    v = NotSet;
-                else
-                    v--;
-            }
-            else if (p >= 'A' && p <= 'Z')
-            {
-                v = p - 'A' + 9;
-            }
+        //public static int Parse(char p)
+        //{
+        //    int v = NotSet;
+        //    if (p >= '0' && p <= '9')
+        //    {
+        //        v = p - '0';
+        //        if (!(v >= 1 && v <= PossibleCandidateCount))
+        //            v = NotSet;
+        //        else
+        //            v--;
+        //    }
+        //    else if (p >= 'A' && p <= 'Z')
+        //    {
+        //        v = p - 'A' + 9;
+        //    }
 
-            return v;
-        }
+        //    return v;
+        //}
     }
 }

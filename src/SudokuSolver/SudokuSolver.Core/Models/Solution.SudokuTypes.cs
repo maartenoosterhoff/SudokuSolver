@@ -28,7 +28,7 @@ namespace SudokuSolver.Core.Models
                         // i = r*9+c
                         // col = i % 9
                         // row = (i-col)/9 = (i-i%9)/9
-                        _cellList[i] = new Cell(i, "R" + (((i - (i % 9)) / 9) + 1).ToString() + "C" + ((i % 9) + 1).ToString());
+                        //_cellList[i] = new Cell(i, "R" + (((i - (i % 9)) / 9) + 1).ToString() + "C" + ((i % 9) + 1).ToString());
                     }
 
                     break;
@@ -40,7 +40,7 @@ namespace SudokuSolver.Core.Models
                         // i = r*16+c
                         // col = i % 16
                         // row = (i-col)/16 = (i-i%16)/16
-                        _cellList[i] = new Cell(i, "R" + (((i - (i % 16)) / 16) + 1).ToString() + "C" + ((i % 16) + 1).ToString());
+                        //_cellList[i] = new Cell(i, "R" + (((i - (i % 16)) / 16) + 1).ToString() + "C" + ((i % 16) + 1).ToString());
                     }
                     break;
                 default:
@@ -169,7 +169,7 @@ namespace SudokuSolver.Core.Models
                 case SudokuType.XSudoku:
                     max = -1;
                     foreach (Cell c in _cellList)
-                        if (c.CandidateCount() > max) max = c.CandidateCount();
+                        if (c.CurrentCandidateCount() > max) max = c.CurrentCandidateCount();
                     if (max < 4)
                         max = 4;
                     if (max == 9)
@@ -198,7 +198,7 @@ namespace SudokuSolver.Core.Models
                             }
                             else {
                                 candidateCount = 0;
-                                if (cell.CandidateCount() == 9) {
+                                if (cell.CurrentCandidateCount() == 9) {
                                     line += "all";
                                     for (int i = 0; i < max - 3; i++)
                                         line += " ";
@@ -222,7 +222,7 @@ namespace SudokuSolver.Core.Models
                 case SudokuType.Sudoku16by16:
                     max = -1;
                     foreach (Cell c in _cellList)
-                        if (c.CandidateCount() > max) max = c.CandidateCount();
+                        if (c.CurrentCandidateCount() > max) max = c.CurrentCandidateCount();
                     if (max < 5)
                         max = 5;
                     if (max == 16)
@@ -251,7 +251,7 @@ namespace SudokuSolver.Core.Models
                             }
                             else {
                                 candidateCount = 0;
-                                if (cell.CandidateCount() == 16) {
+                                if (cell.CurrentCandidateCount() == 16) {
                                     line += "all";
                                     for (int i = 0; i < max - 3; i++)
                                         line += " ";
@@ -283,7 +283,7 @@ namespace SudokuSolver.Core.Models
         /// </summary>
         /// <param name="sudokuString">The sudoku in textformat</param>
         /// <returns>True if the parsing succeeded, False if not</returns>
-        public bool parseSudoku(string sudokuString)
+        public bool ParseSudoku(string sudokuString)
         {
             bool result = false;
             bool formatOk = false;
@@ -294,13 +294,13 @@ namespace SudokuSolver.Core.Models
 
             if (formatOk) {
                 Reset();
-                _sudokuState = SudokuState.RESET;
+                _sudokuState = SudokuState.Reset;
                 char[] m = sudokuString.ToCharArray();
                 int c;
                 for (int i = 0; i < Dimension; i++) {
-                    c = Candidate.Parse(m[i]);
-                    if (c != -1)
-                        SetCell(i, c);
+                    //c = Candidate.Parse(m[i]);
+                    //if (c != -1)
+                    //    SetCell(i, c);
                 }
                 result = true;
             }

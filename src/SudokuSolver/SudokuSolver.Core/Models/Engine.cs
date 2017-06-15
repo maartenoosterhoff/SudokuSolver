@@ -63,7 +63,7 @@ namespace SudokuSolver.Core.Models
         /// <param name="sudokuString">The string representing the sudoku</param>
         public void ParseSudokuString(string sudokuString)
         {
-            if (!_solution.parseSudoku(sudokuString)) {
+            if (!_solution.ParseSudoku(sudokuString)) {
                 throw new System.Exception("Error parsing sudokustring!");
             }
             else {
