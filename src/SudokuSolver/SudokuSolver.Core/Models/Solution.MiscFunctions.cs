@@ -49,7 +49,7 @@ namespace SudokuSolver.Core.Models
         /// <param name="value">The value to set the cell to</param>
         public void SetCell(int cellId, int value)
         {
-            _cellList[cellId].Value = value;
+            _cellList[cellId].SetValue(value);
 
             var cellsWithCandidatesToUnset = from g in FindGroupsForCell(cellId)
                                              from c in g.Cells
@@ -238,6 +238,7 @@ namespace SudokuSolver.Core.Models
         /// <summary>
         /// Populate the internal data of the groups, so it can be easily checked if one group shares cells with another group.
         /// </summary>
+        [Obsolete("Do not use", true)]
         public void PopulateGroupOverlapData()
         {
             var max = _groupList.Count;

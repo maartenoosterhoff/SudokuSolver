@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SudokuSolver.Core.Models;
 
 namespace SudokuSolver.Core.Solvers.Techniques
 {
-    class NakedMultipleSolvingTechnique : ISolvingTechnique
+    public class NakedMultipleSolvingTechnique : ISolvingTechnique
     {
-        public NakedMultipleSolvingTechnique(ISudokuBoardProxy proxy)
-        {
-            if (proxy == null)
-                throw new ArgumentNullException(nameof(proxy));
-
-            _proxy = proxy;
-        }
-
-        private readonly ISudokuBoardProxy _proxy;
         private readonly IDictionary<int, string> _titleMapper = new Dictionary<int, string>
         {
+            { 2, "Naked Double" },
             { 3, "Naked Triple" },
             { 4, "Naked Quadruple" },
             { 5, "Naked Quintuple" },
@@ -33,48 +24,48 @@ namespace SudokuSolver.Core.Solvers.Techniques
             { 15, "Naked Quindecuple" }
         };
 
-        public SolveStep Solve()
+        public SolveStep Solve(ISudokuBoardProxy proxy)
         {
-            var solutions = from requiredCandidateCount in Enumerable.Range(2, _proxy.SudokuBoard.CandidateCount - 3)
-                            from @group in _proxy.SudokuBoard.Groups
-                            where requiredCandidateCount < _proxy.SudokuBoard.CandidateCount - 1   // TODO: Eliminate this by correctly calculate the range-size in the 1st 'from ... in ...'
-                            let solution = SolveInternal(requiredCandidateCount, @group, 0, new BitLayer(_proxy.SudokuBoard.CandidateCount, false))
+            var solutions = from requiredCandidateCount in Enumerable.Range(2, proxy.SudokuBoard.CandidateCount)
+                            where requiredCandidateCount < proxy.SudokuBoard.CandidateCount - 1   // TODO: Eliminate this by correctly calculate the range-size in the 1st 'from ... in ...'
+                            from @group in proxy.SudokuBoard.Groups
+                            let solution = SolveInternal(proxy, requiredCandidateCount, @group, 0, new BitLayer(proxy.SudokuBoard.CandidateCount, false))
                             where solution != null
                             select solution;
 
             return solutions.FirstOrDefault();
         }
 
-        private SolveStep SolveInternal(int requiredCandidateCount, Group @group, int nextCandidateValueStart, BitLayer b)
+        private SolveStep SolveInternal(ISudokuBoardProxy proxy, int requiredCandidateCount, Group @group, int nextCandidateValueStart, BitLayer b)
         {
             if (b.Count() == requiredCandidateCount)
             {
-                var selectedLayer = new BitLayer(_proxy.SudokuBoard.CellCount, false);
-                var unselectedLayer = new BitLayer(_proxy.SudokuBoard.CellCount, false);
-                for (var v = 0; v < Candidate.PossibleCandidateCount; v++)
+                var selectedLayer = new BitLayer(proxy.SudokuBoard.CellCount, false);
+                var unselectedLayer = new BitLayer(proxy.SudokuBoard.CellCount, false);
+                for (var v = 0; v < proxy.SudokuBoard.CandidateCount; v++)
                 {
                     if (b.Layer[v])
-                        selectedLayer |= _proxy.CandidateAsBitLayer(v);
+                        selectedLayer |= proxy.CandidateAsBitLayer(v);
                     else
-                        unselectedLayer |= _proxy.CandidateAsBitLayer(v);
+                        unselectedLayer |= proxy.CandidateAsBitLayer(v);
                 }
 
                 var nakedDoubleLayer = selectedLayer & !unselectedLayer;
-                nakedDoubleLayer = nakedDoubleLayer & _proxy.GroupAsBitLayer(@group.Id);
+                nakedDoubleLayer = nakedDoubleLayer & proxy.GroupAsBitLayer(@group.Id);
                 if (nakedDoubleLayer.Count() == requiredCandidateCount)
                 {
-                    var changesLayer = new BitLayer(_proxy.SudokuBoard.CellCount, false);
+                    var changesLayer = new BitLayer(proxy.SudokuBoard.CellCount, false);
                     BitLayer allChangesLayer;
                     var stepTaken = false;
-                    for (var v = 0; v < Candidate.PossibleCandidateCount; v++)
+                    for (var v = 0; v < proxy.SudokuBoard.CandidateCount; v++)
                     {
                         if (b.Layer[v])
                         {
-                            allChangesLayer = _proxy.CandidateAsBitLayer(v) & _proxy.GroupAsBitLayer(@group.Id);
+                            allChangesLayer = proxy.CandidateAsBitLayer(v) & proxy.GroupAsBitLayer(@group.Id);
                             allChangesLayer = allChangesLayer.SetWithBase(false, nakedDoubleLayer);
                             if (!allChangesLayer.IsEmpty())
                             {
-                                _proxy.SetCandidateLayerWithBase(v, false, allChangesLayer);
+                                proxy.SetCandidateLayerWithBase(v, false, allChangesLayer);
                                 changesLayer = changesLayer | allChangesLayer;
                                 stepTaken = true;
                             }
@@ -84,16 +75,16 @@ namespace SudokuSolver.Core.Solvers.Techniques
                     {
                         var solveStep = new SolveStep
                         {
-                            Items = (from candidate in Enumerable.Range(0, _proxy.SudokuBoard.CandidateCount)
+                            Items = (from candidate in Enumerable.Range(0, proxy.SudokuBoard.CandidateCount)
                                      where b.Layer[candidate]
-                                     let cellIds = _proxy.YieldCellIds(changesLayer)
+                                     let cellIds = proxy.YieldCellIds(changesLayer)
                                      select new SolveStepItem
                                      {
                                          CellIds = cellIds,
                                          SolveStepType = SolveStepItemType.CandidateRemoval,
                                          TechniqueName = _titleMapper[requiredCandidateCount],
                                          Value = candidate,
-                                         Explanation = $"Found a {_titleMapper[requiredCandidateCount]} in group {@group.Name}, removing these candidates from cells {_proxy.YieldCellsDescription(changesLayer)}"
+                                         Explanation = $"Found a {_titleMapper[requiredCandidateCount]} in group {@group.Name}, removing these candidates from cells {proxy.YieldCellsDescription(changesLayer)}"
                                      }
                                     ).ToArray()
                         };
@@ -105,16 +96,16 @@ namespace SudokuSolver.Core.Solvers.Techniques
                 return null;
             }
 
-            // We haven't achieved the required-candidate-count yet.
-            var potentialCandidates = from candidateValue in Enumerable.Range(nextCandidateValueStart, _proxy.SudokuBoard.CandidateCount)
-                                      where candidateValue < _proxy.SudokuBoard.CandidateCount
-                                      where !_proxy.GroupHasNumber(@group.Id, candidateValue)
+            // We haven't achieved the required-candidate-count yet, so do the next recursive step
+            var potentialCandidates = from candidateValue in Enumerable.Range(nextCandidateValueStart, proxy.SudokuBoard.CandidateCount)
+                                      where candidateValue < proxy.SudokuBoard.CandidateCount
+                                      where !proxy.GroupHasNumber(@group.Id, candidateValue)
                                       select candidateValue;
 
             foreach (var potentialCandidate in potentialCandidates)
             {
                 b.Layer[potentialCandidate] = true;
-                var solveStep = SolveInternal(requiredCandidateCount, @group, potentialCandidate + 1, b);
+                var solveStep = SolveInternal(proxy, requiredCandidateCount, @group, potentialCandidate + 1, b);
                 b.Layer[potentialCandidate] = false;
                 if (solveStep != null)
                 {

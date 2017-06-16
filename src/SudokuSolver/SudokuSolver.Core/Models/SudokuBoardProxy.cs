@@ -8,8 +8,8 @@ namespace SudokuSolver.Core.Models
     {
         SudokuBoard SudokuBoard { get; }
 
-        bool[] GetAllCandidates();
-        bool[] GetNoCandidates();
+        //bool[] GetAllCandidates();
+        //bool[] GetNoCandidates();
 
         void SetCell(int cellId, int value);
         void RemoveCandidate(int cellId, int candidate);
@@ -42,15 +42,15 @@ namespace SudokuSolver.Core.Models
         public event EventHandler<CellCandidateRemovedEventArgs> CellCandidateRemoved;
         public event EventHandler<CellValueSetEventArgs> CellValueSet;
 
-        public bool[] GetAllCandidates()
-        {
-            return Enumerable.Range(0, SudokuBoard.CandidateCount).Select(x => true).ToArray();
-        }
+        //public bool[] GetAllCandidates()
+        //{
+        //    return Enumerable.Range(0, SudokuBoard.CandidateCount).Select(x => true).ToArray();
+        //}
 
-        public bool[] GetNoCandidates()
-        {
-            return Enumerable.Range(0, SudokuBoard.CandidateCount).Select(x => false).ToArray();
-        }
+        //public bool[] GetNoCandidates()
+        //{
+        //    return Enumerable.Range(0, SudokuBoard.CandidateCount).Select(x => false).ToArray();
+        //}
 
         private void OnCellCandidateRemoved(int cellId, int candidate)
         {
@@ -64,7 +64,7 @@ namespace SudokuSolver.Core.Models
 
         public void SetCell(int cellId, int value)
         {
-            SudokuBoard.Cells[cellId].Value = value;
+            SudokuBoard.Cells[cellId].SetValue(value);
 
             OnCellValueSet(cellId, value);
 

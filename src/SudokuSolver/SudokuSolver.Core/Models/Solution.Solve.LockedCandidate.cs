@@ -77,9 +77,11 @@ namespace SudokuSolver.Core.Models
                 {
                     SetCandidateLayerWithBase(v, false, D);
 
-                    var step = new SolutionStep(false);
-                    step.StepTaken = true;
-                    step.Description = "Found a Locked Candidate " + Candidate.PrintValue(v) + " in group " + _groupList[groupId].Name + " - removing from cell(s) " + YieldCells(D) + "\r\n";
+                    var step = new SolutionStep(false)
+                    {
+                        StepTaken = true,
+                        Description = "Found a Locked Candidate " + Candidate.PrintValue(v) + " in group " + _groupList[groupId].Name + " - removing from cell(s) " + YieldCells(D) + "\r\n"
+                    };
                     return step;
                 }
             }

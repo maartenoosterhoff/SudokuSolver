@@ -22,14 +22,6 @@ namespace SudokuSolver.Core.Models
 			}
 
 			return new SolutionStep(false);
-
-			//var step = new SolutionStep(false);
-			//
-			//for (var t = 2; t < Candidate.PossibleCandidateCount - 1 && !step.StepTaken; t++)
-			//    for (var i = 0; i < _groupList.Count && !step.StepTaken; i++)
-			//        step = TryHiddenDouble_Internal(t, i, 0, new BitLayer(Candidate.PossibleCandidateCount, false), new BitLayer(Dimension, true));
-			//
-			//return step;
 		}
 
 		private SolutionStep TryHiddenDouble_Internal(int t, int groupId, int nextV, BitLayer b, BitLayer p)

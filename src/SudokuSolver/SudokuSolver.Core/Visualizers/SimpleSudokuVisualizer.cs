@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using SudokuSolver.Core.Extensions;
 using SudokuSolver.Core.Models;
 
 namespace SudokuSolver.Core.Visualizers
@@ -32,7 +34,7 @@ namespace SudokuSolver.Core.Visualizers
         {
             string result = "\r\n";
             string bar;
-            int max;
+            int max = _proxy.SudokuBoard.Cells.Max(x => x.CurrentCandidateCount());
             string line;
             Cell cell;
             int candidateCount;
@@ -42,26 +44,21 @@ namespace SudokuSolver.Core.Visualizers
                 case SudokuType.Classic9by9:
                 case SudokuType.Classic9by9Plus4:
                 case SudokuType.XSudoku:
-                    max = -1;
-                    foreach (Cell c in _proxy.SudokuBoard.Cells)
-                        if (c.CurrentCandidateCount() > max) max = c.CurrentCandidateCount();
                     if (max < 4)
                         max = 4;
                     if (max == 9)
                         max = 8;
 
-                    bar = "";
-                    for (int i = 0; i < (9 * max + 8); i++)
-                        bar += "-";
+                    bar = string.Empty.PadRight(9 * max + 8, '-');
 
                     for (int r = 0; r < 9; r++)
                     {
                         line = string.Empty;
-                        if (r == 3 || r == 6)
+                        if (r.In(3, 6))
                             result += bar + "\r\n";
                         for (int c = 0; c < 9; c++)
                         {
-                            if (c == 3 || c == 6)
+                            if (c.In(3, 6))
                             {
                                 line += "|";
                             }
@@ -72,7 +69,7 @@ namespace SudokuSolver.Core.Visualizers
                             cell = _proxy.SudokuBoard.Cells[(r * 9) + c];
                             if (cell.Value != -1)
                             {
-                                line += cell.ToString();
+                                line += GetCandidatePrintValue(cell.Value);
                                 for (int i = 0; i < max - 1; i++)
                                     line += " ";
                             }
@@ -105,9 +102,6 @@ namespace SudokuSolver.Core.Visualizers
                     break;
 
                 case SudokuType.Sudoku16by16:
-                    max = -1;
-                    foreach (Cell c in _proxy.SudokuBoard.Cells)
-                        if (c.CurrentCandidateCount() > max) max = c.CurrentCandidateCount();
                     if (max < 5)
                         max = 5;
                     if (max == 16)
@@ -135,7 +129,7 @@ namespace SudokuSolver.Core.Visualizers
                             cell = _proxy.SudokuBoard.Cells[(r * 16) + c];
                             if (cell.Value != -1)
                             {
-                                line += cell.ToString();
+                                line += GetCandidatePrintValue(cell.Value);
                                 for (int i = 0; i < max - 1; i++)
                                     line += " ";
                             }

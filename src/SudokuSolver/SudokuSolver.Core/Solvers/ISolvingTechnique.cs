@@ -1,7 +1,9 @@
-﻿namespace SudokuSolver.Core.Solvers
+﻿using SudokuSolver.Core.Models;
+
+namespace SudokuSolver.Core.Solvers
 {
     public interface ISolvingTechnique
     {
-        SolveStep Solve();
+        SolveStep Solve(ISudokuBoardProxy proxy);
     }
 }

@@ -49,6 +49,8 @@
     <Compile Include="Builders\Classis9x9SudokuBoardBuilder.cs" />
     <Compile Include="Builders\SudokuBoardBuilder.cs" />
     <Compile Include="Builders\SudokuBoardBuilderHelper.cs" />
+    <Compile Include="Engine\ISudokuSolverEngine.cs" />
+    <Compile Include="Engine\SimpleSudokuSolverEngine.cs" />
     <Compile Include="Events\CellCandidateRemovedEventArgs.cs" />
     <Compile Include="Events\CellValueSetEventArgs.cs" />
     <Compile Include="Extensions\EnumerableOfTExtensions.cs" />
@@ -82,6 +84,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Solvers\ISolvingTechnique.cs" />
     <Compile Include="Solvers\SolveStep.cs" />
+    <Compile Include="Solvers\Techniques\HiddenMultipleSolvingTechnique.cs" />
+    <Compile Include="Solvers\Techniques\HiddenSingleSolvingTechnique.cs" />
+    <Compile Include="Solvers\Techniques\LockedCandidateSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\NakedMultipleSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\NakedSingleSolvingTechnique.cs" />
     <Compile Include="Visualizers\SimpleSudokuVisualizer.cs" />

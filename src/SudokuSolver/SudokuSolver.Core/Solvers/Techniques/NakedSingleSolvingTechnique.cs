@@ -1,27 +1,16 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using SudokuSolver.Core.Models;
 
 namespace SudokuSolver.Core.Solvers.Techniques
 {
     public class NakedSingleSolvingTechnique : ISolvingTechnique
     {
-        public NakedSingleSolvingTechnique(ISudokuBoardProxy proxy)
+        public SolveStep Solve(ISudokuBoardProxy proxy)
         {
-            if (proxy == null)
-                throw new ArgumentNullException(nameof(proxy));
-
-            _proxy = proxy;
-        }
-
-        private readonly ISudokuBoardProxy _proxy;
-
-        public SolveStep Solve()
-        {
-            var solutions = from cell in _proxy.SudokuBoard.Cells
+            var solutions = from cell in proxy.SudokuBoard.Cells
                             where cell.Value == Candidate.NotSet
                             where cell.CurrentCandidateCount() == 1
-                            from candidateValue in Enumerable.Range(0, _proxy.SudokuBoard.CandidateCount)
+                            from candidateValue in Enumerable.Range(0, proxy.SudokuBoard.CandidateCount)
                             where cell.Candidates[candidateValue]
                             select new { cell, cell.ID, candidateValue };
             var solution = solutions.FirstOrDefault();

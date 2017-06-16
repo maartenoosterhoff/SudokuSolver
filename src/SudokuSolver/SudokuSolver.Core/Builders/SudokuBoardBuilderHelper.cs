@@ -11,8 +11,8 @@ namespace SudokuSolver.Core.Builders
         {
             var cells = Enumerable.Range(0, cellCount)
                 .Select(i => new Cell(
-                    i, 
-                    "R" + (((i - (i % candidateCount)) / candidateCount) + 1).ToString() + "C" + ((i % candidateCount) + 1).ToString(), 
+                    i,
+                    $"R{((i - (i % candidateCount)) / candidateCount) + 1}C{(i % candidateCount) + 1}",
                     Candidate.NotSet,
                     Enumerable.Range(0, candidateCount).Select(x => true).ToArray()
                 ))
@@ -28,37 +28,38 @@ namespace SudokuSolver.Core.Builders
             var groups = new List<Group>();
 
 
-                // Rows
-                var rowGroups = from r in Enumerable.Range(0, dim)
-                                select new Group(
-                                    gId++,
-                                    "R" + (r + 1).ToString(),
-                                    Enumerable.Range(0, dim).Select(c => cells[(r * dim) + c].ID)
-                                );
-                groups.AddRange(rowGroups);
+            // Rows
+            var rowGroups = from r in Enumerable.Range(0, dim)
+                            select new Group(
+                                gId++,
+                                $"R{r + 1}",
 
-                // Columns
-                var colGroups = from c in Enumerable.Range(0, dim)
-                                select new Group(
-                                    gId++,
-                                    "C" + (c + 1).ToString(),
-                                    Enumerable.Range(0, dim).Select(r => cells[(r * dim) + c].ID)
-                                );
-                groups.AddRange(colGroups);
+                                Enumerable.Range(0, dim).Select(c => cells[(r * dim) + c].ID)
+                            );
+            groups.AddRange(rowGroups);
 
-                // Blocks
-                var blockGroups = from r0 in Enumerable.Range(0, dim)
-                                  where r0 % dimBlock == 0
-                                  from c0 in Enumerable.Range(0, dim)
-                                  where c0 % dimBlock == 0
-                                  select new Group(
-                                      gId++,
-                                      "B" + (r0 + 1).ToString() + (c0 + 1).ToString(),
-                                      from r in Enumerable.Range(r0, dimBlock)
-                                      from c in Enumerable.Range(c0, dimBlock)
-                                      select cells[(r * dim) + c].ID
-                                 );
-                groups.AddRange(blockGroups);
+            // Columns
+            var colGroups = from c in Enumerable.Range(0, dim)
+                            select new Group(
+                                gId++,
+                                $"C{c + 1}",
+                                Enumerable.Range(0, dim).Select(r => cells[(r * dim) + c].ID)
+                            );
+            groups.AddRange(colGroups);
+
+            // Blocks
+            var blockGroups = from r0 in Enumerable.Range(0, dim)
+                              where r0 % dimBlock == 0
+                              from c0 in Enumerable.Range(0, dim)
+                              where c0 % dimBlock == 0
+                              select new Group(
+                                  gId++,
+                                  $"B{r0 + 1}{c0 + 1}",
+                                  from r in Enumerable.Range(r0, dimBlock)
+                                  from c in Enumerable.Range(c0, dimBlock)
+                                  select cells[(r * dim) + c].ID
+                             );
+            groups.AddRange(blockGroups);
 
             //if (sudokuBoard.SudokuType == SudokuType.Classic9by9Plus4)
             //{
@@ -135,7 +136,7 @@ namespace SudokuSolver.Core.Builders
                 g.OverlapGroups = new BitLayer(max, false);
                 foreach (var gx in sudokuBoard.Groups)
                 {
-                    g.OverlapGroups.Layer[gx.Id] = g.HasOverlapWithGroup(gx);
+                    g.OverlapGroups.Layer[gx.Id] = g.Cells.Any(c => gx.Cells.Contains(c));
                 }
                 g.OverlapGroups.Layer[g.Id] = false;
             }

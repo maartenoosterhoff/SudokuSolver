@@ -1,7 +1,10 @@
 ﻿using System;
 using SudokuSolver.Core.Builders;
+using SudokuSolver.Core.Engine;
 using SudokuSolver.Core.Models;
 using SudokuSolver.Core.Parsers;
+using SudokuSolver.Core.Solvers;
+using SudokuSolver.Core.Solvers.Techniques;
 using SudokuSolver.Core.Visualizers;
 
 namespace SudokuSolver.UI
@@ -11,7 +14,7 @@ namespace SudokuSolver.UI
         static void Main(string[] args)
         {
             ISudokuBoardBuilder builder = new SudokuBoardBuilderProxy(
-                new []
+                new[]
                 {
                     new Classis9x9SudokuBoardBuilder()
                 }
@@ -19,20 +22,26 @@ namespace SudokuSolver.UI
             SudokuBoard board = builder.Build(SudokuType.Classic9by9);
             ISudokuBoardProxy proxy = new SudokuBoardProxy(board);
             ISudokuParser parser = new SudokuParser();
-            parser.ParseInto(proxy, "_2_____7_9__5_8__4_________4___3___8_7__9__2_6___1___5_________5__6_4__1_3_____9_");
+            // naked single + multiples
+            //parser.ParseInto(proxy, "_2_____7_9__5_8__4_________4___3___8_7__9__2_6___1___5_________5__6_4__1_3_____9_");
+            // hidden single
+            parser.ParseInto(proxy, "000074316000603840000008500725800034000030050000002798008940000040085900971326485");
+
             ISudokuVisualizer visualizer = new SimpleSudokuVisualizer(proxy);
             Console.WriteLine(visualizer.Visualize());
 
+            var engine = new SimpleSudokuSolverEngine(
+                new ISolvingTechnique[]
+                {
+                    new NakedSingleSolvingTechnique(),
+                    new HiddenSingleSolvingTechnique(),
+                    new LockedCandidateSolvingTechnique(),
+                    new NakedMultipleSolvingTechnique(),
+                }
+            );
 
-
-
-
-            //SudokuSolverEngine e = new SudokuSolverEngine(SudokuType.Classic9by9);
-            //e.ParseSudokuString("_2_____7_9__5_8__4_________4___3___8_7__9__2_6___1___5_________5__6_4__1_3_____9_");
-            //e.Visualize();
-            //e.Solve();
-            //e.Visualize();
-            //Console.Write(e.SolutionText);
+            engine.Solve(proxy);
+            Console.WriteLine(visualizer.Visualize());
             Console.ReadLine();
         }
     }

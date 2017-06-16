@@ -97,7 +97,7 @@ namespace SudokuSolver.Core.Models
             _solution.CheckState();
 
             AddSolutionText("Solving stopped\r\n");
-            AddSolutionText("Sudoku state: " + _solution.SudokuState.ToString() + "\r\n");
+            AddSolutionText($"Sudoku state: {_solution.SudokuState}\r\n");
         }
 
         /// <summary>
