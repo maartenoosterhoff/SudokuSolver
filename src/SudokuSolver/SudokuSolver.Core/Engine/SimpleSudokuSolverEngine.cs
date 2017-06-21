@@ -60,7 +60,7 @@ namespace SudokuSolver.Core.Engine
                     }
                 }
 
-                Console.WriteLine($"{item.TechniqueName} {item.Explanation}");
+                Console.WriteLine($"{item.TechniqueName}: {item.Explanation}");
             }
         }
     }

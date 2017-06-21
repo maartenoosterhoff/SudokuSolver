@@ -84,7 +84,7 @@ namespace SudokuSolver.Core.Solvers.Techniques
                                          SolveStepType = SolveStepItemType.CandidateRemoval,
                                          TechniqueName = _titleMapper[requiredCandidateCount],
                                          Value = candidate,
-                                         Explanation = $"Found a {_titleMapper[requiredCandidateCount]} in group {@group.Name}, removing these candidates from cells {proxy.YieldCellsDescription(changesLayer)}"
+                                         Explanation = $"Found a {_titleMapper[requiredCandidateCount]} in group {@group.Name}, removing candidate {Candidate.PrintValue(candidate)} from cells {proxy.YieldCellsDescription(changesLayer)}"
                                      }
                                     ).ToArray()
                         };

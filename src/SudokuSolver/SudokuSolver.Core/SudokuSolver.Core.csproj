@@ -59,7 +59,6 @@
     <Compile Include="Models\BitSet.cs" />
     <Compile Include="Models\Candidate.cs" />
     <Compile Include="Models\Cell.cs" />
-    <Compile Include="Models\CellSorter.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\SolutionStep.cs" />
     <Compile Include="Models\SudokuBoard.cs" />
