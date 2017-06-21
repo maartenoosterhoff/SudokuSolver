@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SudokuSolver.Core.Models
 {
-    public class BitLayer
+    public struct BitLayer
     {
         public int Dimension { get; }
         public bool[] Layer { get; }
@@ -11,7 +11,16 @@ namespace SudokuSolver.Core.Models
         public BitLayer(int dimension, bool defaultValue)
         {
             Dimension = dimension;
-            Layer = Enumerable.Range(0, dimension).Select(x => defaultValue).ToArray();
+            Layer = new bool[dimension];
+            if (defaultValue)
+            {
+                for (int i = 0; i < dimension; i++)
+                {
+                    Layer[i] = defaultValue;
+                }
+            }
+
+            //Layer = Enumerable.Range(0, dimension).Select(x => defaultValue).ToArray();
         }
 
         private BitLayer(BitLayer original)
@@ -22,36 +31,51 @@ namespace SudokuSolver.Core.Models
 
         public static BitLayer operator &(BitLayer A, BitLayer B)
         {
-            if (A.Dimension != B.Dimension) {
+            if (A.Dimension != B.Dimension)
+            {
                 throw new System.Exception("Internal error: dimensions of BitLayers are not equal!");
             }
             var C = new BitLayer(A.Dimension, false);
-            for (var i = 0; i < A.Dimension; i++) {
-                C.Layer[i] = A.Layer[i] & B.Layer[i];
+            var cLayer = C.Layer;
+            var bLayer = B.Layer;
+            var aLayer = A.Layer;
+            for (var i = 0; i < A.Dimension; i++)
+            {
+                cLayer[i] = aLayer[i] & bLayer[i];
             }
             return C;
         }
 
         public static BitLayer operator |(BitLayer A, BitLayer B)
         {
-            if (A.Dimension != B.Dimension) {
+            if (A.Dimension != B.Dimension)
+            {
                 throw new System.Exception("Internal error: dimensions of BitLayers are not equal!");
             }
             var C = new BitLayer(A.Dimension, false);
-            for (var i = 0; i < A.Dimension; i++) {
-                C.Layer[i] = A.Layer[i] | B.Layer[i];
+            var bLayer = B.Layer;
+            var aLayer = A.Layer;
+            var cLayer = C.Layer;
+            for (var i = 0; i < A.Dimension; i++)
+            {
+                cLayer[i] = aLayer[i] | bLayer[i];
             }
             return C;
         }
 
         public static BitLayer operator ^(BitLayer A, BitLayer B)
         {
-            if (A.Dimension != B.Dimension) {
+            if (A.Dimension != B.Dimension)
+            {
                 throw new System.Exception("Internal error: dimensions of BitLayers are not equal!");
             }
             var C = new BitLayer(A.Dimension, false);
-            for (var i = 0; i < A.Dimension; i++) {
-                C.Layer[i] = A.Layer[i] ^ B.Layer[i];
+            var bLayer = B.Layer;
+            var aLayer = A.Layer;
+            var cLayer = C.Layer;
+            for (var i = 0; i < A.Dimension; i++)
+            {
+                cLayer[i] = aLayer[i] ^ bLayer[i];
             }
             return C;
         }
@@ -59,20 +83,27 @@ namespace SudokuSolver.Core.Models
         public static BitLayer operator !(BitLayer A)
         {
             var C = new BitLayer(A.Dimension, false);
+            var aLayer = A.Layer;
+            var cLayer = C.Layer;
             for (var i = 0; i < A.Dimension; i++)
-                C.Layer[i] = !A.Layer[i];
+                cLayer[i] = !aLayer[i];
             return C;
         }
 
         public BitLayer SetWithBase(bool value, BitLayer baseLayer)
         {
-            if (Dimension != baseLayer.Dimension) {
+            if (Dimension != baseLayer.Dimension)
+            {
                 throw new Exception("Internal error: dimensions of BitLayers are not equal!");
             }
             var C = new BitLayer(this);
-            for (var i = 0; i < Dimension; i++) {
-                if (baseLayer.Layer[i]) {
-                    C.Layer[i] = value;
+            var layer = C.Layer;
+            var baseLayerLayer = baseLayer.Layer;
+            for (var i = 0; i < Dimension; i++)
+            {
+                if (baseLayerLayer[i])
+                {
+                    layer[i] = value;
                 }
             }
             return C;

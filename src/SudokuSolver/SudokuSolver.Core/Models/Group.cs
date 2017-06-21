@@ -9,7 +9,7 @@ namespace SudokuSolver.Core.Models
         public int Id { get; }
         public string Name { get; }
         public List<int> Cells { get; set; }
-        public BitLayer OverlapGroups { get; set; }
+        public BitSet OverlapGroups { get; set; }
 
         public Group(int id, string name)
         {
@@ -35,13 +35,13 @@ namespace SudokuSolver.Core.Models
             return Cells.Contains(cellId);
         }
 
-        public BitLayer AsBitLayer(int dimension)
+        public BitSet AsBitLayer(int size)
         {
-            BitLayer result = new BitLayer(dimension, false);
+            var result = new BitSet(size, false);
 
             foreach (int cellId in Cells)
-                if (cellId < dimension)
-                    result.Layer[cellId] = true;
+                if (cellId < size)
+                    result[cellId] = true;
 
             return result;
         }

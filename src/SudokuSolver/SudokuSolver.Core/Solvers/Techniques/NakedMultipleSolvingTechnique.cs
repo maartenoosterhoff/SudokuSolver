@@ -29,39 +29,39 @@ namespace SudokuSolver.Core.Solvers.Techniques
             var solutions = from requiredCandidateCount in Enumerable.Range(2, proxy.SudokuBoard.CandidateCount)
                             where requiredCandidateCount < proxy.SudokuBoard.CandidateCount - 1   // TODO: Eliminate this by correctly calculate the range-size in the 1st 'from ... in ...'
                             from @group in proxy.SudokuBoard.Groups
-                            let solution = SolveInternal(proxy, requiredCandidateCount, @group, 0, new BitLayer(proxy.SudokuBoard.CandidateCount, false))
+                            let solution = SolveInternal(proxy, requiredCandidateCount, @group, 0, new BitSet(proxy.SudokuBoard.CandidateCount, false))
                             where solution != null
                             select solution;
 
             return solutions.FirstOrDefault();
         }
 
-        private SolveStep SolveInternal(ISudokuBoardProxy proxy, int requiredCandidateCount, Group @group, int nextCandidateValueStart, BitLayer b)
+        private SolveStep SolveInternal(ISudokuBoardProxy proxy, int requiredCandidateCount, Group @group, int nextCandidateValueStart, BitSet b)
         {
             if (b.Count() == requiredCandidateCount)
             {
-                var selectedLayer = new BitLayer(proxy.SudokuBoard.CellCount, false);
-                var unselectedLayer = new BitLayer(proxy.SudokuBoard.CellCount, false);
+                var selectedLayer = new BitSet(proxy.SudokuBoard.CellCount, false);
+                var unselectedLayer = new BitSet(proxy.SudokuBoard.CellCount, false);
                 for (var v = 0; v < proxy.SudokuBoard.CandidateCount; v++)
                 {
-                    if (b.Layer[v])
-                        selectedLayer |= proxy.CandidateAsBitLayer(v);
+                    if (b[v])
+                        selectedLayer |= proxy.CandidateAsBitSet(v);
                     else
-                        unselectedLayer |= proxy.CandidateAsBitLayer(v);
+                        unselectedLayer |= proxy.CandidateAsBitSet(v);
                 }
 
                 var nakedDoubleLayer = selectedLayer & !unselectedLayer;
-                nakedDoubleLayer = nakedDoubleLayer & proxy.GroupAsBitLayer(@group.Id);
+                nakedDoubleLayer = nakedDoubleLayer & proxy.GroupAsBitSet(@group.Id);
                 if (nakedDoubleLayer.Count() == requiredCandidateCount)
                 {
-                    var changesLayer = new BitLayer(proxy.SudokuBoard.CellCount, false);
-                    BitLayer allChangesLayer;
+                    var changesLayer = new BitSet(proxy.SudokuBoard.CellCount, false);
+                    BitSet allChangesLayer;
                     var stepTaken = false;
                     for (var v = 0; v < proxy.SudokuBoard.CandidateCount; v++)
                     {
-                        if (b.Layer[v])
+                        if (b[v])
                         {
-                            allChangesLayer = proxy.CandidateAsBitLayer(v) & proxy.GroupAsBitLayer(@group.Id);
+                            allChangesLayer = proxy.CandidateAsBitSet(v) & proxy.GroupAsBitSet(@group.Id);
                             allChangesLayer = allChangesLayer.SetWithBase(false, nakedDoubleLayer);
                             if (!allChangesLayer.IsEmpty())
                             {
@@ -76,7 +76,7 @@ namespace SudokuSolver.Core.Solvers.Techniques
                         var solveStep = new SolveStep
                         {
                             Items = (from candidate in Enumerable.Range(0, proxy.SudokuBoard.CandidateCount)
-                                     where b.Layer[candidate]
+                                     where b[candidate]
                                      let cellIds = proxy.YieldCellIds(changesLayer)
                                      select new SolveStepItem
                                      {
@@ -104,9 +104,9 @@ namespace SudokuSolver.Core.Solvers.Techniques
 
             foreach (var potentialCandidate in potentialCandidates)
             {
-                b.Layer[potentialCandidate] = true;
+                b[potentialCandidate] = true;
                 var solveStep = SolveInternal(proxy, requiredCandidateCount, @group, potentialCandidate + 1, b);
-                b.Layer[potentialCandidate] = false;
+                b[potentialCandidate] = false;
                 if (solveStep != null)
                 {
                     return solveStep;

@@ -133,12 +133,15 @@ namespace SudokuSolver.Core.Builders
             var max = sudokuBoard.Groups.Length;
             foreach (var g in sudokuBoard.Groups)
             {
-                g.OverlapGroups = new BitLayer(max, false);
+                var overlapGroups = new BitSet(max, false);
+
                 foreach (var gx in sudokuBoard.Groups)
                 {
-                    g.OverlapGroups.Layer[gx.Id] = g.Cells.Any(c => gx.Cells.Contains(c));
+                    overlapGroups[gx.Id] = g.Cells.Any(c => gx.Cells.Contains(c));
                 }
-                g.OverlapGroups.Layer[g.Id] = false;
+                overlapGroups[g.Id] = false;
+
+                g.OverlapGroups = overlapGroups;
             }
         }
     }

@@ -8,20 +8,17 @@ namespace SudokuSolver.Core.Models
     {
         SudokuBoard SudokuBoard { get; }
 
-        //bool[] GetAllCandidates();
-        //bool[] GetNoCandidates();
-
         void SetCell(int cellId, int value);
         void RemoveCandidate(int cellId, int candidate);
 
         Group[] FindGroupsForCell(int cellId);
         bool GroupHasNumber(int groupId, int value);
 
-        BitLayer CandidateAsBitLayer(int candidate);
-        BitLayer GroupAsBitLayer(int groupId);
-        void SetCandidateLayerWithBase(int candidate, bool value, BitLayer baseLayer);
-        int[] YieldCellIds(BitLayer A);
-        string YieldCellsDescription(BitLayer A);
+        BitSet CandidateAsBitSet(int candidate);
+        BitSet GroupAsBitSet(int groupId);
+        void SetCandidateLayerWithBase(int candidate, bool value, BitSet baseLayer);
+        int[] YieldCellIds(BitSet A);
+        string YieldCellsDescription(BitSet A);
 
         event EventHandler<CellCandidateRemovedEventArgs> CellCandidateRemoved;
         event EventHandler<CellValueSetEventArgs> CellValueSet;
@@ -95,43 +92,47 @@ namespace SudokuSolver.Core.Models
             return SudokuBoard.Groups[groupId].Cells.Any(c => SudokuBoard.Cells[c].Value == value);
         }
 
-        public BitLayer CandidateAsBitLayer(int candidate)
+        public BitSet CandidateAsBitSet(int candidate)
         {
-            var A = new BitLayer(SudokuBoard.CellCount, false);
-            foreach (var cell in SudokuBoard.Cells)
+            var A = new BitSet(SudokuBoard.CellCount, false);
+            for (int i = 0; i < SudokuBoard.Cells.Length; i++)
             {
-                A.Layer[cell.ID] = cell.Candidates[candidate];
+                A[i] = SudokuBoard.Cells[i].Candidates[candidate];
             }
+            //foreach (var cell in SudokuBoard.Cells)
+            //{
+            //    A[cell.ID] = cell.Candidates[candidate];
+            //}
             return A;
         }
 
-        public BitLayer GroupAsBitLayer(int groupId)
+        public BitSet GroupAsBitSet(int groupId)
         {
-            var A = new BitLayer(SudokuBoard.CellCount, false);
+            var A = new BitSet(SudokuBoard.CellCount, false);
             foreach (var c in SudokuBoard.Groups[groupId].Cells)
             {
-                A.Layer[c] = true;
+                A[c] = true;
             }
             return A;
         }
 
-        public void SetCandidateLayerWithBase(int candidate, bool value, BitLayer baseLayer)
+        public void SetCandidateLayerWithBase(int candidate, bool value, BitSet baseLayer)
         {
-            if (baseLayer.Dimension != SudokuBoard.CellCount)
+            if (baseLayer.Size != SudokuBoard.CellCount)
                 throw new InvalidOperationException("Baselayer dimension is not equal to the solution dimension!");
 
             foreach (var c in SudokuBoard.Cells)
             {
-                if (baseLayer.Layer[c.ID])
+                if (baseLayer[c.ID])
                 {
                     c.Candidates[candidate] = value;
                 }
             }
         }
 
-        public string YieldCellsDescription(BitLayer A)
+        public string YieldCellsDescription(BitSet A)
         {
-            if (A.Dimension != SudokuBoard.CellCount)
+            if (A.Size != SudokuBoard.CellCount)
                 throw new Exception("Bitlayer dimension is not equal to the solution dimension!");
 
             var cellNames = from cellId in YieldCellIds(A)
@@ -140,13 +141,13 @@ namespace SudokuSolver.Core.Models
             return string.Join(",", cellNames);
         }
 
-        public int[] YieldCellIds(BitLayer A)
+        public int[] YieldCellIds(BitSet A)
         {
-            if (A.Dimension != SudokuBoard.CellCount)
+            if (A.Size != SudokuBoard.CellCount)
                 throw new Exception("Bitlayer dimension is not equal to the solution dimension!");
 
-            var cellIds = from i in Enumerable.Range(0, A.Dimension)
-                          where A.Layer[i]
+            var cellIds = from i in Enumerable.Range(0, A.Size)
+                          where A[i]
                           select SudokuBoard.Cells[i].ID;
 
             return cellIds.ToArray();

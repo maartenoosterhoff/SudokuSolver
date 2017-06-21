@@ -11,7 +11,8 @@ namespace SudokuSolver.Core.Solvers.Techniques
                             from @group in proxy.SudokuBoard.Groups
                             where !proxy.GroupHasNumber(@group.Id, candidateValue)
                             from groupX in proxy.SudokuBoard.Groups
-                            where proxy.SudokuBoard.Groups[@group.Id].OverlapGroups.Layer[groupX.Id]
+                            where groupX.Id != @group.Id
+                            where @group.OverlapGroups[groupX.Id]
                             let solutionStep = TryLockedCandidateInternal(proxy, candidateValue, @group, groupX)
                             where solutionStep != null
                             select solutionStep;
@@ -21,9 +22,9 @@ namespace SudokuSolver.Core.Solvers.Techniques
 
         private SolveStep TryLockedCandidateInternal(ISudokuBoardProxy proxy, int candidateValue, Group @group, Group groupX)
         {
-            var candidateLayer = proxy.CandidateAsBitLayer(candidateValue);
-            var groupLayer = proxy.GroupAsBitLayer(@group.Id);
-            var groupXLayer = proxy.GroupAsBitLayer(groupX.Id);
+            var candidateLayer = proxy.CandidateAsBitSet(candidateValue);
+            var groupLayer = proxy.GroupAsBitSet(@group.Id);
+            var groupXLayer = proxy.GroupAsBitSet(groupX.Id);
             // A -> Find the current group for current candidate
             var A = candidateLayer & groupLayer;
             // B -> Find the overlap between A and the other group

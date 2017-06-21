@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Linq;
 
 namespace SudokuSolver.Core.Models
