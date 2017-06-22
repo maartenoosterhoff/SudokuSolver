@@ -52,7 +52,7 @@ namespace SudokuSolver.Core.Solvers.Techniques
                             if (!(proxy.CandidateAsBitSet(candidateValue) & cellIndicator).IsEmpty())
                             {
                                 stepTaken = true;
-                                proxy.SetCandidateLayerWithBase(candidateValue, false, cellIndicator);
+                                //proxy.SetCandidateLayerWithBase(candidateValue, false, cellIndicator);    // TODO: Remove this
 
                                 (otherCandidates = otherCandidates ?? new List<int>()).Add(candidateValue);
                             }

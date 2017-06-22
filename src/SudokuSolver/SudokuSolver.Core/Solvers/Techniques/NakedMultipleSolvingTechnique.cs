@@ -65,7 +65,7 @@ namespace SudokuSolver.Core.Solvers.Techniques
                             allChangesLayer = allChangesLayer.SetWithBase(false, nakedDoubleLayer);
                             if (!allChangesLayer.IsEmpty())
                             {
-                                proxy.SetCandidateLayerWithBase(v, false, allChangesLayer);
+                                proxy.SetCandidateLayerWithBase(v, false, allChangesLayer); // TODO: Remove this
                                 changesLayer = changesLayer | allChangesLayer;
                                 stepTaken = true;
                             }

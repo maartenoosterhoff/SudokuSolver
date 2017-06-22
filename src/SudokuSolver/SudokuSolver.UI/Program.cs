@@ -39,8 +39,11 @@ namespace SudokuSolver.UI
             //parser.ParseInto(proxy, ".....725..1.58...3..4..9.....7...59.3...5.1..2....6.....63..8.5.......7.1..7.....");
 
 
-            //
-            parser.ParseInto(proxy, "049132000081479000327685914096051800075028000038046005853267000712894563964513000");
+            // ??
+            //parser.ParseInto(proxy, "049132000081479000327685914096051800075028000038046005853267000712894563964513000");
+
+            // ??
+            parser.ParseInto(proxy, "..9.4.8.1.376.....6.............5.....8.1.7.....4.............7.....732.5.4.2.9..");
 
             ISudokuVisualizer visualizer = new SimpleSudokuVisualizer(proxy);
             Console.WriteLine(visualizer.Visualize());
@@ -52,7 +55,8 @@ namespace SudokuSolver.UI
                     new HiddenSingleSolvingTechnique(),
                     new LockedCandidateSolvingTechnique(),
                     new NakedMultipleSolvingTechnique(),
-                    new HiddenMultipleSolvingTechnique()
+                    new HiddenMultipleSolvingTechnique(),
+                    new AlignedPairExclusionSolvingTechnique()
                 }
             );
             var sw = Stopwatch.StartNew();

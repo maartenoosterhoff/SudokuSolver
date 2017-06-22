@@ -70,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Solvers\ISolvingTechnique.cs" />
     <Compile Include="Solvers\SolveStep.cs" />
+    <Compile Include="Solvers\Techniques\AlignedPairExclusionSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\HiddenMultipleSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\HiddenSingleSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\LockedCandidateSolvingTechnique.cs" />

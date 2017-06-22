@@ -37,7 +37,7 @@ namespace SudokuSolver.Core.Solvers.Techniques
                 var D = candidateLayer & groupXLayer & !groupLayer;
                 if (!D.IsEmpty())
                 {
-                    proxy.SetCandidateLayerWithBase(candidateValue, false, D);
+                    //proxy.SetCandidateLayerWithBase(candidateValue, false, D);  // TODO: Remove this
 
                     var solveStep = new SolveStep
                     {
