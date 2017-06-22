@@ -137,7 +137,7 @@ namespace SudokuSolver.Core.Builders
 
                 foreach (var gx in sudokuBoard.Groups)
                 {
-                    overlapGroups[gx.Id] = g.Cells.Any(c => gx.Cells.Contains(c));
+                    overlapGroups[gx.Id] = g.CellIds.Any(c => gx.CellIds.Contains(c));
                 }
                 overlapGroups[g.Id] = false;
 

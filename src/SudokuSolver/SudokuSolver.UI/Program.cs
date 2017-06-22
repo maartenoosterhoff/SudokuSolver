@@ -23,6 +23,7 @@ namespace SudokuSolver.UI
 
             SudokuBoard board = builder.Build(SudokuType.Classic9by9);
             ISudokuBoardProxy proxy = new SudokuBoardProxy(board);
+
             ISudokuParser parser = new SudokuParser();
             // solvable with: locked-candidates/naked-multiple
             //parser.ParseInto(proxy, "_2_____7_9__5_8__4_________4___3___8_7__9__2_6___1___5_________5__6_4__1_3_____9_");
@@ -44,6 +45,16 @@ namespace SudokuSolver.UI
 
             // ??
             parser.ParseInto(proxy, "..9.4.8.1.376.....6.............5.....8.1.7.....4.............7.....732.5.4.2.9..");
+
+            // Hook events
+            proxy.CellValueSet += (s, e) =>
+            {
+                Console.WriteLine($"> EVENT: Cell {proxy.SudokuBoard.Cells[e.CellId].Name} set with value {Candidate.PrintValue(e.Value)}");
+            };
+            proxy.CellCandidateRemoved += (s, e) =>
+            {
+                Console.WriteLine($"> EVENT: Cell {proxy.SudokuBoard.Cells[e.CellId].Name} candidate {Candidate.PrintValue(e.Candidate)} was removed");
+            };
 
             ISudokuVisualizer visualizer = new SimpleSudokuVisualizer(proxy);
             Console.WriteLine(visualizer.Visualize());

@@ -2,13 +2,12 @@ using System.Linq;
 
 namespace SudokuSolver.Core.Models
 {
-    //[DebuggerDisplay("{")]
     public class Cell
     {
         public int ID { get; }
         public int Value { get; private set; }
 
-        public bool[] Candidates { get; private set; }
+        public bool[] Candidates { get; }
         public string Name { get; }
 
         public Cell(int id, string name, int value, bool[] candidates)
@@ -21,8 +20,6 @@ namespace SudokuSolver.Core.Models
 
         public override string ToString()
         {
-            //return Candidate.PrintValue(Value);
-
             return $"{Name}, {Value}, {string.Join("/", Candidates)}";
         }
 

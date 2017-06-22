@@ -26,27 +26,68 @@ namespace SudokuSolver.Core.Solvers.Techniques
 
         private SolveStep SolveInternal(ISudokuBoardProxy proxy, BitSet inLayer, BitSet outLayer)
         {
-            var populations = Populate(proxy, inLayer);
-            var cell1 = populations.Item1;
-            var cell2 = populations.Item2;
-            var posMax = cell1.Length;
-            for (var pos = 0; pos < posMax; pos++)
+            var applicableCells = from c1 in Enumerable.Range(0, inLayer.Size)
+                                  where inLayer[c1] && proxy.SudokuBoard.Cells[c1].CurrentCandidateCount() >= 2
+                                  from c2 in Enumerable.Range(c1 + 1, inLayer.Size)
+                                  where c2 < inLayer.Size // TODO: calculate the iteration-length better so this criteria can be omitted, original for statement: for (int c2 = c1 + 1; c2 < source.Dimension; c2++)
+                                  where inLayer[c2] && proxy.SudokuBoard.Cells[c2].CurrentCandidateCount() >= 2
+                                  select new { cell1 = c1, cell2 = c2 };
+
+            foreach (var cells in applicableCells)
             {
+                //var populations = Populate(proxy, inLayer);
+                //var cell1 = populations.Item1;
+                //var cell2 = populations.Item2;
+                //var posMax = cell1.Length;
+                //for (var pos = 0; pos < posMax; pos++)
+                //{
+
+                //var cell1 = cells.cell1;
+                //var cell2 = cells.cell2;
+
+
                 // 1) Find all possible combinations of the values of the two paircells.
+                var c1 = proxy.SudokuBoard.Cells[cells.cell1];
+                var c2 = proxy.SudokuBoard.Cells[cells.cell2];
+                //var c1 = proxy.SudokuBoard.Cells[cell1[pos]];
+                //var c2 = proxy.SudokuBoard.Cells[cell2[pos]];
+                //var cellCombos = from v1 in Enumerable.Range(0, proxy.SudokuBoard.CandidateCount)
+                //                 where c1.Candidates[v1]
+                //                 from v2 in Enumerable.Range(0, proxy.SudokuBoard.CandidateCount)
+                //                 where c2.Candidates[v2]
+                //                 select new { v1, v2 };
+
                 var value1 = new List<int>();
                 var value2 = new List<int>();
-                var c1 = proxy.SudokuBoard.Cells[cell1[pos]];
-                var c2 = proxy.SudokuBoard.Cells[cell2[pos]];
                 for (var v1 = 0; v1 < proxy.SudokuBoard.CandidateCount; v1++)
+                {
                     if (c1.Candidates[v1])
+                    {
                         for (var v2 = 0; v2 < proxy.SudokuBoard.CandidateCount; v2++)
+                        {
                             if (c2.Candidates[v2])
                             {
                                 value1.Add(v1);
                                 value2.Add(v2);
                             }
+                        }
+                    }
+                }
 
                 // Remove all combinations which are taken by the surrounding cells
+                //var excludeCombos = (from lp in Enumerable.Range(0, outLayer.Size)
+                //                     where outLayer[lp]
+                //                     let cell = proxy.SudokuBoard.Cells[lp]
+                //                     where cell.CurrentCandidateCount() == 2
+                //                     let candidates = cell.Candidates.Select((x, i) => new { candidate = i, candidateValue = x }).Where(x => !x.candidateValue).Select(x => x.candidate).ToArray()
+                //                     select candidates
+                //                    )
+                //                    .ToArray();
+
+                //cellCombos = cellCombos
+                //    .Where(x => !excludeCombos.Any(z => (x.v1 == z[0] && x.v2 == z[1]) || (x.v1 == z[1] && x.v2 == z[0]))
+                //    ;
+
                 for (var lp = 0; lp < outLayer.Size; lp++)
                 {
                     if (outLayer[lp])
@@ -64,12 +105,17 @@ namespace SudokuSolver.Core.Solvers.Techniques
                                     else
                                         n2 = v;
                             }
+
+
+
                             for (var i = value1.Count - 1; i >= 0; i--)
+                            {
                                 if ((value1[i] == n1 && value2[i] == n2) || (value1[i] == n2 && value2[i] == n1))
                                 {
                                     value1.RemoveAt(i);
                                     value2.RemoveAt(i);
                                 }
+                            }
                         }
                     }
                 }
@@ -81,12 +127,14 @@ namespace SudokuSolver.Core.Solvers.Techniques
                 {
                     if (c1.Candidates[i] && !value1.Contains(i))
                     {
-                        solveStepItems[i].Add(cell1[pos]);
+                        solveStepItems[i].Add(c1.ID);// cell1);
+                        //solveStepItems[i].Add(cell1[pos]);
                         stepTaken = true;
                     }
                     if (c2.Candidates[i] && !value2.Contains(i))
                     {
-                        solveStepItems[i].Add(cell2[pos]);
+                        solveStepItems[i].Add(c2.ID);// cell2);
+                        //solveStepItems[i].Add(cell2[pos]);
                     }
                 }
 
@@ -113,19 +161,19 @@ namespace SudokuSolver.Core.Solvers.Techniques
             return null;
         }
 
-        private Tuple<int[], int[]> Populate(ISudokuBoardProxy proxy, BitSet source)
-        {
-            var data = from c1 in Enumerable.Range(0, source.Size)
-                       where source[c1] && proxy.SudokuBoard.Cells[c1].CurrentCandidateCount() >= 2
-                       from c2 in Enumerable.Range(c1 + 1, source.Size)
-                       where c2 < source.Size // TODO: calculate the iteration-length better so this criteria can be omitted, original for statement: for (int c2 = c1 + 1; c2 < source.Dimension; c2++)
-                       where source[c2] && proxy.SudokuBoard.Cells[c2].CurrentCandidateCount() >= 2
-                       select new { c1, c2 };
+        //private Tuple<int[], int[]> Populate(ISudokuBoardProxy proxy, BitSet source)
+        //{
+        //    var data = from c1 in Enumerable.Range(0, source.Size)
+        //               where source[c1] && proxy.SudokuBoard.Cells[c1].CurrentCandidateCount() >= 2
+        //               from c2 in Enumerable.Range(c1 + 1, source.Size)
+        //               where c2 < source.Size // TODO: calculate the iteration-length better so this criteria can be omitted, original for statement: for (int c2 = c1 + 1; c2 < source.Dimension; c2++)
+        //               where source[c2] && proxy.SudokuBoard.Cells[c2].CurrentCandidateCount() >= 2
+        //               select new { c1, c2 };
 
-            return Tuple.Create(
-                data.Select(x => x.c1).ToArray(),
-                data.Select(x => x.c2).ToArray()
-            );
-        }
+        //    return Tuple.Create(
+        //        data.Select(x => x.c1).ToArray(),
+        //        data.Select(x => x.c2).ToArray()
+        //    );
+        //}
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using SudokuSolver.Core.Models;
 
 namespace SudokuSolver.Core.Solvers.Techniques
@@ -10,31 +9,26 @@ namespace SudokuSolver.Core.Solvers.Techniques
         {
             var solutions = from candidateValue in Enumerable.Range(0, proxy.SudokuBoard.CandidateCount)
                             from @group in proxy.SudokuBoard.Groups
-                            where !@group.Cells.Any(c => proxy.SudokuBoard.Cells[c].Value == candidateValue)
-                            let applicableCells = @group.Cells.Where(c => proxy.SudokuBoard.Cells[c].Candidates[candidateValue]).ToArray()
+                            where !@group.CellIds.Any(c => proxy.SudokuBoard.Cells[c].Value == candidateValue)
+                            let applicableCells = @group.CellIds.Where(c => proxy.SudokuBoard.Cells[c].Candidates[candidateValue]).ToArray()
                             where applicableCells.Length == 1
-                            select new { lastCell = proxy.SudokuBoard.Cells[applicableCells.First()], candidateValue, @group };
+                            let lastCell = proxy.SudokuBoard.Cells[applicableCells.First()]
+                            select new SolveStep
+                            {
+                                Items = new[]
+                                {
+                                    new SolveStepItem
+                                    {
+                                        CellIds = new [] { lastCell.ID },
+                                        SolveStepType = SolveStepItemType.CandidateConfirmation,
+                                        Value = candidateValue,
+                                        TechniqueName = "Hidden Single",
+                                        Explanation = $"In group {group.Name} the cell {lastCell.Name} is the only cell for candidate {Candidate.PrintValue(candidateValue)}."
+                                    }
+                                }
+                            };
 
-            var solution = solutions.FirstOrDefault();
-            if (solution != null)
-            {
-                return new SolveStep
-                {
-                    Items = new[]
-                    {
-                        new SolveStepItem
-                        {
-                            CellIds = new [] { solution.lastCell.ID },
-                            SolveStepType = SolveStepItemType.CandidateConfirmation,
-                            Value = solution.candidateValue,
-                            TechniqueName = "Hidden Single",
-                            Explanation = $"In group {solution.group.Name} the cell {solution.lastCell.Name} is the only cell for candidate {Candidate.PrintValue(solution.candidateValue)}."
-                        }
-                    }
-                };
-            }
-
-            return null;
+            return solutions.FirstOrDefault();
         }
     }
 }

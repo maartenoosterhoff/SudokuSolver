@@ -39,16 +39,6 @@ namespace SudokuSolver.Core.Models
         public event EventHandler<CellCandidateRemovedEventArgs> CellCandidateRemoved;
         public event EventHandler<CellValueSetEventArgs> CellValueSet;
 
-        //public bool[] GetAllCandidates()
-        //{
-        //    return Enumerable.Range(0, SudokuBoard.CandidateCount).Select(x => true).ToArray();
-        //}
-
-        //public bool[] GetNoCandidates()
-        //{
-        //    return Enumerable.Range(0, SudokuBoard.CandidateCount).Select(x => false).ToArray();
-        //}
-
         private void OnCellCandidateRemoved(int cellId, int candidate)
         {
             CellCandidateRemoved?.Invoke(this, new CellCandidateRemovedEventArgs(cellId, candidate));
@@ -66,7 +56,7 @@ namespace SudokuSolver.Core.Models
             OnCellValueSet(cellId, value);
 
             var cellIdsWithCandidatesToUnset = from g in FindGroupsForCell(cellId)
-                                               from c in g.Cells
+                                               from c in g.CellIds
                                                where c != cellId
                                                select c;
             foreach (var candidateCellId in cellIdsWithCandidatesToUnset)
@@ -77,9 +67,12 @@ namespace SudokuSolver.Core.Models
 
         public void RemoveCandidate(int cellId, int candidate)
         {
-            SudokuBoard.Cells[cellId].Candidates[candidate] = false;
+            if (SudokuBoard.Cells[cellId].Candidates[candidate])
+            {
+                SudokuBoard.Cells[cellId].Candidates[candidate] = false;
 
-            OnCellCandidateRemoved(cellId, candidate);
+                OnCellCandidateRemoved(cellId, candidate);
+            }
         }
 
         public Group[] FindGroupsForCell(int cellId)
@@ -89,7 +82,7 @@ namespace SudokuSolver.Core.Models
 
         public bool GroupHasNumber(int groupId, int value)
         {
-            return SudokuBoard.Groups[groupId].Cells.Any(c => SudokuBoard.Cells[c].Value == value);
+            return SudokuBoard.Groups[groupId].CellIds.Any(c => SudokuBoard.Cells[c].Value == value);
         }
 
         public BitSet CandidateAsBitSet(int candidate)
@@ -99,17 +92,13 @@ namespace SudokuSolver.Core.Models
             {
                 A[i] = SudokuBoard.Cells[i].Candidates[candidate];
             }
-            //foreach (var cell in SudokuBoard.Cells)
-            //{
-            //    A[cell.ID] = cell.Candidates[candidate];
-            //}
             return A;
         }
 
         public BitSet GroupAsBitSet(int groupId)
         {
             var A = new BitSet(SudokuBoard.CellCount, false);
-            foreach (var c in SudokuBoard.Groups[groupId].Cells)
+            foreach (var c in SudokuBoard.Groups[groupId].CellIds)
             {
                 A[c] = true;
             }
@@ -118,8 +107,10 @@ namespace SudokuSolver.Core.Models
 
         public void SetCandidateLayerWithBase(int candidate, bool value, BitSet baseLayer)
         {
+#if DEBUG
             if (baseLayer.Size != SudokuBoard.CellCount)
                 throw new InvalidOperationException("Baselayer dimension is not equal to the solution dimension!");
+#endif
 
             foreach (var c in SudokuBoard.Cells)
             {
@@ -132,8 +123,10 @@ namespace SudokuSolver.Core.Models
 
         public string YieldCellsDescription(BitSet A)
         {
+#if DEBUG
             if (A.Size != SudokuBoard.CellCount)
                 throw new Exception("Bitlayer dimension is not equal to the solution dimension!");
+#endif
 
             var cellNames = from cellId in YieldCellIds(A)
                             select SudokuBoard.Cells[cellId].Name;
@@ -143,8 +136,10 @@ namespace SudokuSolver.Core.Models
 
         public int[] YieldCellIds(BitSet A)
         {
+#if DEBUG
             if (A.Size != SudokuBoard.CellCount)
                 throw new Exception("Bitlayer dimension is not equal to the solution dimension!");
+#endif
 
             var cellIds = from i in Enumerable.Range(0, A.Size)
                           where A[i]

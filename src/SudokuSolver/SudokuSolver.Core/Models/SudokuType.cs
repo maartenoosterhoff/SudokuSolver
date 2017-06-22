@@ -2,9 +2,6 @@
 
 namespace SudokuSolver.Core.Models
 {
-    /// <summary>
-    /// The different types of sudoku.
-    /// </summary>
     public enum SudokuType
     {
         Classic9by9,
