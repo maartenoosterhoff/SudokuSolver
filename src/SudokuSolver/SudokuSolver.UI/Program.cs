@@ -33,6 +33,10 @@ namespace SudokuSolver.UI
             //parser.ParseInto(proxy, "_____4_718__21______7_9_3________4262_______7659________5_6_1______49__541_3_____"); // OK
             // solvable with: naked-single/hidden-single/locked-candidates/naked-multiple
             //parser.ParseInto(proxy, "..9.4.8.1.376.....6.............5.....8.1.7.....4.............7.....732.5.4.2.9..");
+            // solvable with: naked-single/hidden-single/locked-candidates/naked-multiple/aligned-pair-exclusion
+            //parser.ParseInto(proxy, "..9.4.8.1.376.....6.............5.....8.1.7.....4.............7.....732.5.4.2.9..");
+            // solvable with: naked-single/hidden-single/naked-multiple
+            parser.ParseInto(proxy, "049132000081479000327685914096051800075028000038046005853267000712894563964513000");
 
             // unsolvable with: hidden-single/locked-candidates/naked-multiple
             //parser.ParseInto(proxy, "708000300000201000500000000040000026300080000000100090090600004000070500000000000");
@@ -40,21 +44,18 @@ namespace SudokuSolver.UI
             //parser.ParseInto(proxy, ".....725..1.58...3..4..9.....7...59.3...5.1..2....6.....63..8.5.......7.1..7.....");
 
 
-            // ??
-            //parser.ParseInto(proxy, "049132000081479000327685914096051800075028000038046005853267000712894563964513000");
-
-            // ??
-            parser.ParseInto(proxy, "..9.4.8.1.376.....6.............5.....8.1.7.....4.............7.....732.5.4.2.9..");
-
             // Hook events
-            proxy.CellValueSet += (s, e) =>
+            if (true)
             {
-                Console.WriteLine($"> EVENT: Cell {proxy.SudokuBoard.Cells[e.CellId].Name} set with value {Candidate.PrintValue(e.Value)}");
-            };
-            proxy.CellCandidateRemoved += (s, e) =>
-            {
-                Console.WriteLine($"> EVENT: Cell {proxy.SudokuBoard.Cells[e.CellId].Name} candidate {Candidate.PrintValue(e.Candidate)} was removed");
-            };
+                proxy.CellValueSet += (s, e) =>
+                {
+                    Console.WriteLine($"> EVENT: Cell {proxy.SudokuBoard.Cells[e.CellId].Name} set with value {Candidate.PrintValue(e.Value)}");
+                };
+                proxy.CellCandidateRemoved += (s, e) =>
+                {
+                    Console.WriteLine($"> EVENT: Cell {proxy.SudokuBoard.Cells[e.CellId].Name} candidate {Candidate.PrintValue(e.Candidate)} was removed");
+                };
+            }
 
             ISudokuVisualizer visualizer = new SimpleSudokuVisualizer(proxy);
             Console.WriteLine(visualizer.Visualize());
@@ -67,7 +68,8 @@ namespace SudokuSolver.UI
                     new LockedCandidateSolvingTechnique(),
                     new NakedMultipleSolvingTechnique(),
                     new HiddenMultipleSolvingTechnique(),
-                    new AlignedPairExclusionSolvingTechnique()
+                    new AlignedPairExclusionSolvingTechnique(),
+                    new XWingSolvingTechnique()
                 }
             );
             var sw = Stopwatch.StartNew();

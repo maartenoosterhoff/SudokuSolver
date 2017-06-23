@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using SudokuSolver.Core.Events;
+using System.Collections.Generic;
 
 namespace SudokuSolver.Core.Models
 {
@@ -19,6 +20,7 @@ namespace SudokuSolver.Core.Models
         void SetCandidateLayerWithBase(int candidate, bool value, BitSet baseLayer);
         int[] YieldCellIds(BitSet A);
         string YieldCellsDescription(BitSet A);
+        int[] BitSetToCellIdArray(BitSet cellBitSet);
 
         event EventHandler<CellCandidateRemovedEventArgs> CellCandidateRemoved;
         event EventHandler<CellValueSetEventArgs> CellValueSet;
@@ -103,6 +105,23 @@ namespace SudokuSolver.Core.Models
                 A[c] = true;
             }
             return A;
+        }
+
+        public int[] BitSetToCellIdArray(BitSet cellBitSet)
+        {
+#if DEBUG
+            if (cellBitSet.Size != SudokuBoard.CellCount)
+                throw new InvalidOperationException("Bit-set size is not equal to the solution dimension!");
+#endif
+            var cellIds = new List<int>();
+            foreach (var c in SudokuBoard.Cells)
+            {
+                if (cellBitSet[c.ID])
+                {
+                    cellIds.Add(c.ID);
+                }
+            }
+            return cellIds.ToArray();
         }
 
         public void SetCandidateLayerWithBase(int candidate, bool value, BitSet baseLayer)

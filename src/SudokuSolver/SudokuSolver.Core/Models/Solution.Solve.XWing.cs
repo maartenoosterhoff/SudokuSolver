@@ -18,14 +18,14 @@ namespace SudokuSolver.Core.Models
             for (var v = 0; v < Candidate.PossibleCandidateCount && !step.StepTaken; v++) {
                 groupWithoutValue = FindGroupsWithoutValue(v);
                 for (var t = 2; t < Dimension - 1 && !step.StepTaken; t++) {
-                    step = TryXWing_Internal(v, t, 0, new List<int>(), new List<int>(), 0, groupWithoutValue);//, new BitLayer(Solution.Dimension, false));
+                    step = TryXWing_Internal(v, t, 0, new List<int>(), new List<int>(), 0, groupWithoutValue);
                 }
             }
 
             return step;
         }
 
-        private SolutionStep TryXWing_Internal(int v, int t, int phase, List<int> listGroupA, List<int> listGroupB, int start, bool[] sourceGroupList)//, BitLayer sourceBl)
+        private SolutionStep TryXWing_Internal(int v, int t, int phase, List<int> listGroupA, List<int> listGroupB, int start, bool[] sourceGroupList)
         {
             var step = new SolutionStep(false);
             bool overlap;

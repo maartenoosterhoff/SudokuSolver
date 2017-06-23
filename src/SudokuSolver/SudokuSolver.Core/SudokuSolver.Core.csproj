@@ -75,6 +75,7 @@
     <Compile Include="Solvers\Techniques\LockedCandidateSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\NakedMultipleSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\NakedSingleSolvingTechnique.cs" />
+    <Compile Include="Solvers\Techniques\XWingSolvingTechnique.cs" />
     <Compile Include="Visualizers\SimpleSudokuVisualizer.cs" />
   </ItemGroup>
   <ItemGroup>

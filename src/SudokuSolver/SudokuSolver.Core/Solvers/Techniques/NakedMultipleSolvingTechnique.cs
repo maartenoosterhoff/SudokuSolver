@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SudokuSolver.Core.Models;
+using System;
 
 namespace SudokuSolver.Core.Solvers.Techniques
 {
@@ -54,9 +55,9 @@ namespace SudokuSolver.Core.Solvers.Techniques
                 nakedDoubleLayer = nakedDoubleLayer & proxy.GroupAsBitSet(@group.Id);
                 if (nakedDoubleLayer.Count() == requiredCandidateCount)
                 {
-                    var changesLayer = new BitSet(proxy.SudokuBoard.CellCount, false);
                     BitSet allChangesLayer;
                     var stepTaken = false;
+                    var cellsToChange = new Dictionary<int, Tuple<int[], BitSet>>();
                     for (var v = 0; v < proxy.SudokuBoard.CandidateCount; v++)
                     {
                         if (b[v])
@@ -65,8 +66,7 @@ namespace SudokuSolver.Core.Solvers.Techniques
                             allChangesLayer = allChangesLayer.SetWithBase(false, nakedDoubleLayer);
                             if (!allChangesLayer.IsEmpty())
                             {
-                                proxy.SetCandidateLayerWithBase(v, false, allChangesLayer); // TODO: Remove this
-                                changesLayer = changesLayer | allChangesLayer;
+                                cellsToChange.Add(v, Tuple.Create(proxy.BitSetToCellIdArray(allChangesLayer), allChangesLayer));
                                 stepTaken = true;
                             }
                         }
@@ -76,8 +76,9 @@ namespace SudokuSolver.Core.Solvers.Techniques
                         var solveStep = new SolveStep
                         {
                             Items = (from candidate in Enumerable.Range(0, proxy.SudokuBoard.CandidateCount)
-                                     where b[candidate]
-                                     let cellIds = proxy.YieldCellIds(changesLayer)
+                                     where b[candidate] && cellsToChange.ContainsKey(candidate)
+                                     let cellIds = cellsToChange[candidate].Item1
+                                     let changesLayer = cellsToChange[candidate].Item2
                                      select new SolveStepItem
                                      {
                                          CellIds = cellIds,
