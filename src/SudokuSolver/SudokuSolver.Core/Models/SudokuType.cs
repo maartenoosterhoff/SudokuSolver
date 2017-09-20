@@ -4,9 +4,9 @@ namespace SudokuSolver.Core.Models
 {
     public enum SudokuType
     {
-        Classic9by9,
-        Classic9by9Plus4,
-        Sudoku16by16,
+        Classic9By9,
+        Classic9By9Plus4,
+        Sudoku16By16,
         XSudoku
     }
 

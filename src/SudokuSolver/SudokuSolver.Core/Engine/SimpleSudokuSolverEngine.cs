@@ -42,7 +42,7 @@ namespace SudokuSolver.Core.Engine
 
         private void ApplySolveStep(ISudokuBoardProxy proxy, SolveStep solveStep)
         {
-            if (solveStep == null || solveStep.Items == null)
+            if (solveStep?.Items == null)
                 return;
 
             foreach (var item in solveStep.Items)

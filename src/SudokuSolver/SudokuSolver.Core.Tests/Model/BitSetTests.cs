@@ -10,11 +10,11 @@ namespace SudokuSolver.Core.Tests.Model
         [TestMethod]
         public void Ctor_sets_default_values_correctly_to_true()
         {
-            foreach (var @value in new[] { false, true })
+            foreach (var value in new[] { false, true })
             {
                 foreach (var size in Enumerable.Range(1, 127))
                 {
-                    TestValues(@value, size);
+                    TestValues(value, size);
                 }
             }
         }
@@ -22,12 +22,12 @@ namespace SudokuSolver.Core.Tests.Model
         private static void TestValues(bool value, int size)
         {
             // Arrange/act
-            var bitSet = new BitSet(size, @value);
+            var bitSet = new BitSet(size, value);
 
             // Assert
             for (int i = 0; i < bitSet.Size; i++)
             {
-                Assert.AreEqual(@value, bitSet[i]);
+                Assert.AreEqual(value, bitSet[i]);
             }
         }
 
@@ -35,13 +35,15 @@ namespace SudokuSolver.Core.Tests.Model
         public void Setter_sets_correct_bit()
         {
             // Arrange
-            var set1 = new BitSet(10, false);
-            set1[2] = true;
-            set1[5] = false;
-            set1[5] = true;
-            set1[8] = true;
-            set1[8] = false;
-            set1[9] = false;
+            var set1 = new BitSet(10, false)
+            {
+                [2] = true,
+                [5] = false,
+                [5] = true,
+                [8] = true,
+                [8] = false,
+                [9] = false
+            };
 
             // Assert
             Assert.AreEqual(false, set1[0]);
@@ -60,14 +62,18 @@ namespace SudokuSolver.Core.Tests.Model
         public void AndOperator_sets_int_values_correctly()
         {
             // Arrange
-            var set1 = new BitSet(10, false);
-            set1[2] = true;
-            set1[5] = true;
-            set1[8] = true;
-            var set2 = new BitSet(10, false);
-            set2[2] = true;
-            set2[6] = true;
-            set2[8] = true;
+            var set1 = new BitSet(10, false)
+            {
+                [2] = true,
+                [5] = true,
+                [8] = true
+            };
+            var set2 = new BitSet(10, false)
+            {
+                [2] = true,
+                [6] = true,
+                [8] = true
+            };
 
             // Act
             var set3 = set1 & set2;
@@ -89,14 +95,18 @@ namespace SudokuSolver.Core.Tests.Model
         public void OrOperator_sets_int_values_correctly()
         {
             // Arrange
-            var set1 = new BitSet(10, false);
-            set1[2] = true;
-            set1[5] = true;
-            set1[8] = true;
-            var set2 = new BitSet(10, false);
-            set2[2] = true;
-            set2[6] = true;
-            set2[8] = true;
+            var set1 = new BitSet(10, false)
+            {
+                [2] = true,
+                [5] = true,
+                [8] = true
+            };
+            var set2 = new BitSet(10, false)
+            {
+                [2] = true,
+                [6] = true,
+                [8] = true
+            };
 
             // Act
             var set3 = set1 | set2;
@@ -118,14 +128,18 @@ namespace SudokuSolver.Core.Tests.Model
         public void XOrOperator_sets_int_values_correctly()
         {
             // Arrange
-            var set1 = new BitSet(10, false);
-            set1[2] = true;
-            set1[5] = true;
-            set1[8] = true;
-            var set2 = new BitSet(10, false);
-            set2[2] = true;
-            set2[6] = true;
-            set2[8] = true;
+            var set1 = new BitSet(10, false)
+            {
+                [2] = true,
+                [5] = true,
+                [8] = true
+            };
+            var set2 = new BitSet(10, false)
+            {
+                [2] = true,
+                [6] = true,
+                [8] = true
+            };
 
             // Act
             var set3 = set1 ^ set2;
@@ -147,10 +161,12 @@ namespace SudokuSolver.Core.Tests.Model
         public void NotOperator_sets_int_values_correctly()
         {
             // Arrange
-            var set1 = new BitSet(10, false);
-            set1[2] = true;
-            set1[5] = true;
-            set1[8] = true;
+            var set1 = new BitSet(10, false)
+            {
+                [2] = true,
+                [5] = true,
+                [8] = true
+            };
 
             // Act
             var set3 = !set1;
@@ -174,10 +190,12 @@ namespace SudokuSolver.Core.Tests.Model
             Assert.AreEqual(0, new BitSet(10, false).Count());
             Assert.AreEqual(10, new BitSet(10, true).Count());
 
-            var set1 = new BitSet(10, false);
-            set1[2] = true;
-            set1[5] = true;
-            set1[8] = true;
+            var set1 = new BitSet(10, false)
+            {
+                [2] = true,
+                [5] = true,
+                [8] = true
+            };
             Assert.AreEqual(3, set1.Count());
         }
 
@@ -187,10 +205,12 @@ namespace SudokuSolver.Core.Tests.Model
             Assert.AreEqual(true, new BitSet(10, false).IsEmpty());
             Assert.AreEqual(false, new BitSet(10, true).IsEmpty());
 
-            var set1 = new BitSet(10, false);
-            set1[2] = true;
-            set1[5] = true;
-            set1[8] = true;
+            var set1 = new BitSet(10, false)
+            {
+                [2] = true,
+                [5] = true,
+                [8] = true
+            };
             Assert.AreEqual(false, set1.IsEmpty());
         }
     }

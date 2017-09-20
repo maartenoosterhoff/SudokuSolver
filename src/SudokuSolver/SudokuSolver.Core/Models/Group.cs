@@ -23,20 +23,6 @@ namespace SudokuSolver.Core.Models
             return CellIds.Contains(cellId);
         }
 
-        public BitSet AsBitLayer(int size)
-        {
-            var result = new BitSet(size, false);
-
-            foreach (int cellId in CellIds)
-            {
-                if (cellId < size)
-                {
-                    result[cellId] = true;
-                }
-            }
-
-            return result;
-        }
     }
 }
 

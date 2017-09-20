@@ -8,7 +8,7 @@ namespace SudokuSolver.Core.Models
         private readonly int _arraySize;
         private readonly uint[] _values; // 4 bytes each
 
-        public int Size { get { return _size; } }
+        public int Size => _size;
 
         public BitSet(int size, bool defaultValue)
         {
@@ -25,7 +25,7 @@ namespace SudokuSolver.Core.Models
             }
         }
 
-        public BitSet(BitSet original)
+        private BitSet(BitSet original)
         {
             _size = original._size;
             _arraySize = original._arraySize;
@@ -110,51 +110,51 @@ namespace SudokuSolver.Core.Models
             }
         }
 
-        public static BitSet operator &(BitSet A, BitSet B)
+        public static BitSet operator &(BitSet a, BitSet b)
         {
-            if (A.Size != B.Size)
+            if (a.Size != b.Size)
                 throw new Exception("Internal error: sizes of bitsets are not equal!");
 
-            var andResult = new BitSet(A);
+            var andResult = new BitSet(a);
             for (int i = 0; i < andResult._arraySize; i++)
             {
-                andResult._values[i] = A._values[i] & B._values[i];
+                andResult._values[i] = a._values[i] & b._values[i];
             }
             return andResult;
         }
 
-        public static BitSet operator |(BitSet A, BitSet B)
+        public static BitSet operator |(BitSet a, BitSet b)
         {
-            if (A.Size != B.Size)
+            if (a.Size != b.Size)
                 throw new Exception("Internal error: sizes of bitsets are not equal!");
 
-            var orResult = new BitSet(A);
+            var orResult = new BitSet(a);
             for (int i = 0; i < orResult._arraySize; i++)
             {
-                orResult._values[i] = A._values[i] | B._values[i];
+                orResult._values[i] = a._values[i] | b._values[i];
             }
             return orResult;
         }
 
-        public static BitSet operator ^(BitSet A, BitSet B)
+        public static BitSet operator ^(BitSet a, BitSet b)
         {
-            if (A.Size != B.Size)
+            if (a.Size != b.Size)
                 throw new Exception("Internal error: sizes of bitsets are not equal!");
 
-            var andResult = new BitSet(A);
+            var andResult = new BitSet(a);
             for (int i = 0; i < andResult._arraySize; i++)
             {
-                andResult._values[i] = A._values[i] ^ B._values[i];
+                andResult._values[i] = a._values[i] ^ b._values[i];
             }
             return andResult;
         }
 
-        public static BitSet operator !(BitSet A)
+        public static BitSet operator !(BitSet a)
         {
-            var notResult = new BitSet(A);
+            var notResult = new BitSet(a);
             for (int i = 0; i < notResult._arraySize; i++)
             {
-                notResult._values[i] = ~A._values[i];
+                notResult._values[i] = ~a._values[i];
             }
             return notResult;
         }

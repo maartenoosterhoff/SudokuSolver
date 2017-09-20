@@ -26,12 +26,9 @@ namespace SudokuSolver.Core.Builders
             foreach (var builder in _builders)
             {
                 var sudokuTypeAttribute = builder.GetCustomAttribute<SudokuTypeAttribute>();
-                if (sudokuTypeAttribute != null)
+                if (sudokuTypeAttribute?.SudokuType == sudokuType)
                 {
-                    if (sudokuTypeAttribute.SudokuType == sudokuType)
-                    {
-                        return builder.Build(sudokuType);
-                    }
+                    return builder.Build(sudokuType);
                 }
             }
 

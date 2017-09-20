@@ -34,7 +34,7 @@ namespace SudokuSolver.Core.Builders
                                 gId++,
                                 $"R{r + 1}",
 
-                                Enumerable.Range(0, dim).Select(c => cells[(r * dim) + c].ID)
+                                Enumerable.Range(0, dim).Select(c => cells[(r * dim) + c].Id)
                             );
             groups.AddRange(rowGroups);
 
@@ -43,7 +43,7 @@ namespace SudokuSolver.Core.Builders
                             select new Group(
                                 gId++,
                                 $"C{c + 1}",
-                                Enumerable.Range(0, dim).Select(r => cells[(r * dim) + c].ID)
+                                Enumerable.Range(0, dim).Select(r => cells[(r * dim) + c].Id)
                             );
             groups.AddRange(colGroups);
 
@@ -57,7 +57,7 @@ namespace SudokuSolver.Core.Builders
                                   $"B{r0 + 1}{c0 + 1}",
                                   from r in Enumerable.Range(r0, dimBlock)
                                   from c in Enumerable.Range(c0, dimBlock)
-                                  select cells[(r * dim) + c].ID
+                                  select cells[(r * dim) + c].Id
                              );
             groups.AddRange(blockGroups);
 

@@ -55,14 +55,13 @@ namespace SudokuSolver.Core.Solvers.Techniques
                 nakedDoubleLayer = nakedDoubleLayer & proxy.GroupAsBitSet(@group.Id);
                 if (nakedDoubleLayer.Count() == requiredCandidateCount)
                 {
-                    BitSet allChangesLayer;
                     var stepTaken = false;
                     var cellsToChange = new Dictionary<int, Tuple<int[], BitSet>>();
                     for (var v = 0; v < proxy.SudokuBoard.CandidateCount; v++)
                     {
                         if (b[v])
                         {
-                            allChangesLayer = proxy.CandidateAsBitSet(v) & proxy.GroupAsBitSet(@group.Id);
+                            var allChangesLayer = proxy.CandidateAsBitSet(v) & proxy.GroupAsBitSet(@group.Id);
                             allChangesLayer = allChangesLayer.SetWithBase(false, nakedDoubleLayer);
                             if (!allChangesLayer.IsEmpty())
                             {

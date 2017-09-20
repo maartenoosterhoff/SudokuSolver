@@ -23,7 +23,6 @@ namespace SudokuSolver.Core.Solvers.Techniques
             { 14, "Hidden Quattordecuple" },
             { 15, "Hidden Quindecuple" }
         };
-        private object otherCandidates;
 
         public SolveStep Solve(ISudokuBoardProxy proxy)
         {

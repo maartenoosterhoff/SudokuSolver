@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using SudokuSolver.Core.Events;
 using System.Collections.Generic;
@@ -18,8 +18,8 @@ namespace SudokuSolver.Core.Models
         BitSet CandidateAsBitSet(int candidate);
         BitSet GroupAsBitSet(int groupId);
         void SetCandidateLayerWithBase(int candidate, bool value, BitSet baseLayer);
-        int[] YieldCellIds(BitSet A);
-        string YieldCellsDescription(BitSet A);
+        int[] YieldCellIds(BitSet a);
+        string YieldCellsDescription(BitSet a);
         int[] BitSetToCellIdArray(BitSet cellBitSet);
 
         event EventHandler<CellCandidateRemovedEventArgs> CellCandidateRemoved;
@@ -65,6 +65,9 @@ namespace SudokuSolver.Core.Models
             {
                 RemoveCandidate(candidateCellId, value);
             }
+
+            // Clear cache
+            _candidateAsBitSetCache.Clear();
         }
 
         public void RemoveCandidate(int cellId, int candidate)
@@ -72,6 +75,9 @@ namespace SudokuSolver.Core.Models
             if (SudokuBoard.Cells[cellId].Candidates[candidate])
             {
                 SudokuBoard.Cells[cellId].Candidates[candidate] = false;
+
+                // Clear cache
+                _candidateAsBitSetCache.Clear();
 
                 OnCellCandidateRemoved(cellId, candidate);
             }
@@ -87,24 +93,42 @@ namespace SudokuSolver.Core.Models
             return SudokuBoard.Groups[groupId].CellIds.Any(c => SudokuBoard.Cells[c].Value == value);
         }
 
+        private readonly Dictionary<int, BitSet> _candidateAsBitSetCache = new Dictionary<int, BitSet>();
+
         public BitSet CandidateAsBitSet(int candidate)
         {
-            var A = new BitSet(SudokuBoard.CellCount, false);
-            for (int i = 0; i < SudokuBoard.Cells.Length; i++)
+            if (!_candidateAsBitSetCache.ContainsKey(candidate))
             {
-                A[i] = SudokuBoard.Cells[i].Candidates[candidate];
+                var a = new BitSet(SudokuBoard.CellCount, false);
+                for (int i = 0; i < SudokuBoard.Cells.Length; i++)
+                {
+                    a[i] = SudokuBoard.Cells[i].Candidates[candidate];
+                }
+                //return A;
+                _candidateAsBitSetCache.Add(candidate, a);
+                return a;
             }
-            return A;
+
+            return _candidateAsBitSetCache[candidate];
         }
+
+        private readonly Dictionary<int, BitSet> _groupAsBitSetCache = new Dictionary<int, BitSet>();
 
         public BitSet GroupAsBitSet(int groupId)
         {
-            var A = new BitSet(SudokuBoard.CellCount, false);
-            foreach (var c in SudokuBoard.Groups[groupId].CellIds)
+            if (!_groupAsBitSetCache.ContainsKey(groupId))
             {
-                A[c] = true;
+                var a = new BitSet(SudokuBoard.CellCount, false);
+                foreach (var c in SudokuBoard.Groups[groupId].CellIds)
+                {
+                    a[c] = true;
+                }
+                //return A;
+                _groupAsBitSetCache.Add(groupId, a);
+                return a;
             }
-            return A;
+
+            return _groupAsBitSetCache[groupId];
         }
 
         public int[] BitSetToCellIdArray(BitSet cellBitSet)
@@ -116,9 +140,9 @@ namespace SudokuSolver.Core.Models
             var cellIds = new List<int>();
             foreach (var c in SudokuBoard.Cells)
             {
-                if (cellBitSet[c.ID])
+                if (cellBitSet[c.Id])
                 {
-                    cellIds.Add(c.ID);
+                    cellIds.Add(c.Id);
                 }
             }
             return cellIds.ToArray();
@@ -133,36 +157,36 @@ namespace SudokuSolver.Core.Models
 
             foreach (var c in SudokuBoard.Cells)
             {
-                if (baseLayer[c.ID])
+                if (baseLayer[c.Id])
                 {
                     c.Candidates[candidate] = value;
                 }
             }
         }
 
-        public string YieldCellsDescription(BitSet A)
+        public string YieldCellsDescription(BitSet a)
         {
 #if DEBUG
-            if (A.Size != SudokuBoard.CellCount)
+            if (a.Size != SudokuBoard.CellCount)
                 throw new Exception("Bitlayer dimension is not equal to the solution dimension!");
 #endif
 
-            var cellNames = from cellId in YieldCellIds(A)
+            var cellNames = from cellId in YieldCellIds(a)
                             select SudokuBoard.Cells[cellId].Name;
 
             return string.Join(",", cellNames);
         }
 
-        public int[] YieldCellIds(BitSet A)
+        public int[] YieldCellIds(BitSet a)
         {
 #if DEBUG
-            if (A.Size != SudokuBoard.CellCount)
+            if (a.Size != SudokuBoard.CellCount)
                 throw new Exception("Bitlayer dimension is not equal to the solution dimension!");
 #endif
 
-            var cellIds = from i in Enumerable.Range(0, A.Size)
-                          where A[i]
-                          select SudokuBoard.Cells[i].ID;
+            var cellIds = from i in Enumerable.Range(0, a.Size)
+                          where a[i]
+                          select SudokuBoard.Cells[i].Id;
 
             return cellIds.ToArray();
         }

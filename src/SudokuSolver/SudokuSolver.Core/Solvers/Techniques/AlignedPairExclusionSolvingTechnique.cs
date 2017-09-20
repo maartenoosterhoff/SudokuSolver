@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SudokuSolver.Core.Models;
 
@@ -12,11 +11,11 @@ namespace SudokuSolver.Core.Solvers.Techniques
             var solutions = from groupA in proxy.SudokuBoard.Groups
                             from groupB in proxy.SudokuBoard.Groups
                             where proxy.SudokuBoard.Groups[groupA.Id].OverlapGroups[groupB.Id]
-                            let A = proxy.GroupAsBitSet(groupA.Id)
-                            let B = proxy.GroupAsBitSet(groupB.Id)
-                            let inLayer = A & B
+                            let a = proxy.GroupAsBitSet(groupA.Id)
+                            let b = proxy.GroupAsBitSet(groupB.Id)
+                            let inLayer = a & b
                             //let outLayer = (A | B) & (!inLayer)
-                            let outLayer = A ^ B
+                            let outLayer = a ^ b
                             let solution = SolveInternal(proxy, inLayer, outLayer)
                             where solution != null
                             select solution;
@@ -127,13 +126,13 @@ namespace SudokuSolver.Core.Solvers.Techniques
                 {
                     if (c1.Candidates[i] && !value1.Contains(i))
                     {
-                        solveStepItems[i].Add(c1.ID);// cell1);
+                        solveStepItems[i].Add(c1.Id);// cell1);
                         //solveStepItems[i].Add(cell1[pos]);
                         stepTaken = true;
                     }
                     if (c2.Candidates[i] && !value2.Contains(i))
                     {
-                        solveStepItems[i].Add(c2.ID);// cell2);
+                        solveStepItems[i].Add(c2.Id);// cell2);
                         //solveStepItems[i].Add(cell2[pos]);
                     }
                 }

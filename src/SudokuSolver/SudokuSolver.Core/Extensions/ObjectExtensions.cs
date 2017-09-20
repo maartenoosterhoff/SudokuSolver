@@ -7,10 +7,7 @@ namespace SudokuSolver.Core.Extensions
     {
         public static TAttribute GetCustomAttribute<TAttribute>(this object obj) where TAttribute : Attribute
         {
-            if (obj == null)
-                return null;
-
-            return obj.GetType().GetCustomAttributes(true).OfType<TAttribute>().FirstOrDefault();
+            return obj?.GetType().GetCustomAttributes(true).OfType<TAttribute>().FirstOrDefault();
         }
     }
 }

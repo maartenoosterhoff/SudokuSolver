@@ -26,16 +26,16 @@ namespace SudokuSolver.Core.Solvers.Techniques
             var groupLayer = proxy.GroupAsBitSet(@group.Id);
             var groupXLayer = proxy.GroupAsBitSet(groupX.Id);
             // A -> Find the current group for current candidate
-            var A = candidateLayer & groupLayer;
+            var a = candidateLayer & groupLayer;
             // B -> Find the overlap between A and the other group
             // C -> Find the non-overlap of A and the over group, sort of A - group2
-            var B = A & groupXLayer;
-            var C = A & (!groupXLayer);
-            if (!B.IsEmpty() && C.IsEmpty())
+            var b = a & groupXLayer;
+            var c = a & (!groupXLayer);
+            if (!b.IsEmpty() && c.IsEmpty())
             {
                 // D = group[groupId2] - B;
-                var D = candidateLayer & groupXLayer & !groupLayer;
-                if (!D.IsEmpty())
+                var d = candidateLayer & groupXLayer & !groupLayer;
+                if (!d.IsEmpty())
                 {
                     //proxy.SetCandidateLayerWithBase(candidateValue, false, D);  // TODO: Remove this
 
@@ -47,9 +47,9 @@ namespace SudokuSolver.Core.Solvers.Techniques
                             {
                                 TechniqueName = "Locked Candidate",
                                 SolveStepType = SolveStepItemType.CandidateRemoval,
-                                CellIds = proxy.YieldCellIds(D),
+                                CellIds = proxy.YieldCellIds(d),
                                 Value = candidateValue,
-                                Explanation = $"Found a Locked Candidate {Candidate.PrintValue(candidateValue)} in group {@group.Name}, removing candidate from cell(s) {proxy.YieldCellsDescription(D)}"
+                                Explanation = $"Found a Locked Candidate {Candidate.PrintValue(candidateValue)} in group {@group.Name}, removing candidate from cell(s) {proxy.YieldCellsDescription(d)}"
                             }
                         }
                     };

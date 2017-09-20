@@ -2,13 +2,13 @@
 
 namespace SudokuSolver.Core.Builders
 {
-    [SudokuType(SudokuType = SudokuType.Classic9by9)]
-    public class Classis9x9SudokuBoardBuilder : ISudokuBoardBuilder
+    [SudokuType(SudokuType = SudokuType.Classic9By9)]
+    public class Classis9X9SudokuBoardBuilder : ISudokuBoardBuilder
     {
         public SudokuBoard Build(SudokuType sudokuType)
         {
             var sudokuBoard = new SudokuBoard(
-                SudokuType.Classic9by9,
+                SudokuType.Classic9By9,
                 81,
                 9,
                 SudokuBoardBuilderHelper.CreateCells(9, 81)

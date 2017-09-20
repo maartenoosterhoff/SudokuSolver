@@ -41,8 +41,8 @@ namespace SudokuSolver.Core.Visualizers
 
             switch (_proxy.SudokuBoard.SudokuType)
             {
-                case SudokuType.Classic9by9:
-                case SudokuType.Classic9by9Plus4:
+                case SudokuType.Classic9By9:
+                case SudokuType.Classic9By9Plus4:
                 case SudokuType.XSudoku:
                     if (max < 4)
                         max = 4;
@@ -101,7 +101,7 @@ namespace SudokuSolver.Core.Visualizers
                     }
                     break;
 
-                case SudokuType.Sudoku16by16:
+                case SudokuType.Sudoku16By16:
                     if (max < 5)
                         max = 5;
                     if (max == 16)

@@ -75,11 +75,15 @@
     <Compile Include="Solvers\Techniques\LockedCandidateSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\NakedMultipleSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\NakedSingleSolvingTechnique.cs" />
+    <Compile Include="Solvers\Techniques\TableingSolvingTechnique.cs" />
     <Compile Include="Solvers\Techniques\XWingSolvingTechnique.cs" />
     <Compile Include="Visualizers\SimpleSudokuVisualizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Solvers\Techniques\Other-techniques.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
