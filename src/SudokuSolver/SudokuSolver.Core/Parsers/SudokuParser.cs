@@ -24,7 +24,7 @@ namespace SudokuSolver.Core.Parsers
 
             sudokuBoardProxy.SudokuBoard.State = SudokuState.Reset;
 
-            for (int cellId = 0; cellId < sudokuBoard.CellCount; cellId++)
+            for (var cellId = 0; cellId < sudokuBoard.CellCount; cellId++)
             {
                 var cellValue = Parse(serializedSudoku[cellId], sudokuBoard.CandidateCount);
                 if (cellValue != Candidate.NotSet)
@@ -36,7 +36,7 @@ namespace SudokuSolver.Core.Parsers
 
         private static int Parse(char p, int candidateCount)
         {
-            int v = Candidate.NotSet;
+            var v = Candidate.NotSet;
             if (p >= '0' && p <= '9')
             {
                 v = p - '0';

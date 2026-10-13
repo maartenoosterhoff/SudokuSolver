@@ -17,9 +17,9 @@ namespace SudokuSolver.Core.Models
             _arraySize = GetArraySize(size);
             _values = new uint[_arraySize];
 
-            uint initValue = defaultValue ? ~((uint)0) : 0;
+            var initValue = defaultValue ? ~((uint)0) : 0;  // All bits to 1. uint.MaxValue would probably do.
 
-            for (int i = 0; i < _arraySize; i++)
+            for (var i = 0; i < _arraySize; i++)
             {
                 _values[i] = initValue;
             }
@@ -31,7 +31,7 @@ namespace SudokuSolver.Core.Models
             _arraySize = original._arraySize;
             _values = new uint[_arraySize];
 
-            for (int i = 0; i < _arraySize; i++)
+            for (var i = 0; i < _arraySize; i++)
             {
                 _values[i] = original._values[i];
             }
@@ -116,7 +116,7 @@ namespace SudokuSolver.Core.Models
                 throw new Exception("Internal error: sizes of bitsets are not equal!");
 
             var andResult = new BitSet(a);
-            for (int i = 0; i < andResult._arraySize; i++)
+            for (var i = 0; i < andResult._arraySize; i++)
             {
                 andResult._values[i] = a._values[i] & b._values[i];
             }
@@ -129,7 +129,7 @@ namespace SudokuSolver.Core.Models
                 throw new Exception("Internal error: sizes of bitsets are not equal!");
 
             var orResult = new BitSet(a);
-            for (int i = 0; i < orResult._arraySize; i++)
+            for (var i = 0; i < orResult._arraySize; i++)
             {
                 orResult._values[i] = a._values[i] | b._values[i];
             }
@@ -142,7 +142,7 @@ namespace SudokuSolver.Core.Models
                 throw new Exception("Internal error: sizes of bitsets are not equal!");
 
             var andResult = new BitSet(a);
-            for (int i = 0; i < andResult._arraySize; i++)
+            for (var i = 0; i < andResult._arraySize; i++)
             {
                 andResult._values[i] = a._values[i] ^ b._values[i];
             }
@@ -152,7 +152,7 @@ namespace SudokuSolver.Core.Models
         public static BitSet operator !(BitSet a)
         {
             var notResult = new BitSet(a);
-            for (int i = 0; i < notResult._arraySize; i++)
+            for (var i = 0; i < notResult._arraySize; i++)
             {
                 notResult._values[i] = ~a._values[i];
             }
@@ -161,8 +161,8 @@ namespace SudokuSolver.Core.Models
 
         public int Count()
         {
-            int count = 0;
-            for (int i = 0; i < _size; i++)
+            var count = 0;
+            for (var i = 0; i < _size; i++)
             {
                 if (this[i])
                     count++;

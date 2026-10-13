@@ -25,7 +25,7 @@ namespace SudokuSolver.Core.Tests.Model
             var bitSet = new BitSet(size, value);
 
             // Assert
-            for (int i = 0; i < bitSet.Size; i++)
+            for (var i = 0; i < bitSet.Size; i++)
             {
                 Assert.AreEqual(value, bitSet[i]);
             }

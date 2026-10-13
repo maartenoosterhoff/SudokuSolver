@@ -32,9 +32,9 @@ namespace SudokuSolver.Core.Visualizers
 
         public string Visualize()
         {
-            string result = "\r\n";
+            var result = "\r\n";
             string bar;
-            int max = _proxy.SudokuBoard.Cells.Max(x => x.CurrentCandidateCount());
+            var max = _proxy.SudokuBoard.Cells.Max(x => x.CurrentCandidateCount());
             string line;
             Cell cell;
             int candidateCount;
@@ -51,12 +51,12 @@ namespace SudokuSolver.Core.Visualizers
 
                     bar = string.Empty.PadRight(9 * max + 8, '-');
 
-                    for (int r = 0; r < 9; r++)
+                    for (var r = 0; r < 9; r++)
                     {
                         line = string.Empty;
                         if (r.In(3, 6))
                             result += bar + "\r\n";
-                        for (int c = 0; c < 9; c++)
+                        for (var c = 0; c < 9; c++)
                         {
                             if (c.In(3, 6))
                             {
@@ -70,7 +70,7 @@ namespace SudokuSolver.Core.Visualizers
                             if (cell.Value != -1)
                             {
                                 line += GetCandidatePrintValue(cell.Value);
-                                for (int i = 0; i < max - 1; i++)
+                                for (var i = 0; i < max - 1; i++)
                                     line += " ";
                             }
                             else
@@ -79,12 +79,12 @@ namespace SudokuSolver.Core.Visualizers
                                 if (cell.CurrentCandidateCount() == 9)
                                 {
                                     line += "all";
-                                    for (int i = 0; i < max - 3; i++)
+                                    for (var i = 0; i < max - 3; i++)
                                         line += " ";
                                 }
                                 else
                                 {
-                                    for (int i = 0; i < _proxy.SudokuBoard.CandidateCount; i++)
+                                    for (var i = 0; i < _proxy.SudokuBoard.CandidateCount; i++)
                                     {
                                         if (cell.Candidates[i])
                                         {
@@ -92,7 +92,7 @@ namespace SudokuSolver.Core.Visualizers
                                             line += GetCandidatePrintValue(i);
                                         }
                                     }
-                                    for (int i = 0; i < (max - candidateCount); i++)
+                                    for (var i = 0; i < (max - candidateCount); i++)
                                         line += " ";
                                 }
                             }
@@ -108,15 +108,15 @@ namespace SudokuSolver.Core.Visualizers
                         max = 15;
 
                     bar = "";
-                    for (int i = 0; i < (16 * max + 15); i++)
+                    for (var i = 0; i < (16 * max + 15); i++)
                         bar += "-";
 
-                    for (int r = 0; r < 16; r++)
+                    for (var r = 0; r < 16; r++)
                     {
                         line = string.Empty;
                         if (r == 4 || r == 8 || r == 12)
                             result += bar + "\r\n";
-                        for (int c = 0; c < 16; c++)
+                        for (var c = 0; c < 16; c++)
                         {
                             if (c == 4 || c == 8 || c == 12)
                             {
@@ -130,7 +130,7 @@ namespace SudokuSolver.Core.Visualizers
                             if (cell.Value != -1)
                             {
                                 line += GetCandidatePrintValue(cell.Value);
-                                for (int i = 0; i < max - 1; i++)
+                                for (var i = 0; i < max - 1; i++)
                                     line += " ";
                             }
                             else
@@ -139,12 +139,12 @@ namespace SudokuSolver.Core.Visualizers
                                 if (cell.CurrentCandidateCount() == 16)
                                 {
                                     line += "all";
-                                    for (int i = 0; i < max - 3; i++)
+                                    for (var i = 0; i < max - 3; i++)
                                         line += " ";
                                 }
                                 else
                                 {
-                                    for (int i = 0; i < _proxy.SudokuBoard.CandidateCount; i++)
+                                    for (var i = 0; i < _proxy.SudokuBoard.CandidateCount; i++)
                                     {
                                         if (cell.Candidates[i])
                                         {
@@ -152,7 +152,7 @@ namespace SudokuSolver.Core.Visualizers
                                             line += GetCandidatePrintValue(i);
                                         }
                                     }
-                                    for (int i = 0; i < (max - candidateCount); i++)
+                                    for (var i = 0; i < (max - candidateCount); i++)
                                         line += " ";
                                 }
                             }

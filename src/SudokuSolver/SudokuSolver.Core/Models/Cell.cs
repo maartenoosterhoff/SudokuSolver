@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SudokuSolver.Core.Models
@@ -7,7 +8,8 @@ namespace SudokuSolver.Core.Models
         public int Id { get; }
         public int Value { get; private set; }
 
-        public bool[] Candidates { get; }
+        private readonly List<bool> _candidates;
+        public IReadOnlyList<bool> Candidates => _candidates.AsReadOnly();
         public string Name { get; }
 
         public Cell(int id, string name, int value, bool[] candidates)
@@ -15,7 +17,7 @@ namespace SudokuSolver.Core.Models
             Id = id;
             Name = name;
             Value = value;
-            Candidates = candidates;
+            _candidates = candidates.ToList();
         }
 
         public override string ToString()
@@ -31,9 +33,17 @@ namespace SudokuSolver.Core.Models
         public void SetValue(int value)
         {
             Value = value;
-            for (var i = 0; i < Candidates.Length; i++)
+            for (var i = 0; i < _candidates.Count; i++)
             {
-                Candidates[i] = false;
+                _candidates[i] = false;
+            }
+        }
+
+        public void RemoveCandidate(int value)
+        {
+            if (_candidates[value])
+            {
+                _candidates[value] = false;
             }
         }
     }

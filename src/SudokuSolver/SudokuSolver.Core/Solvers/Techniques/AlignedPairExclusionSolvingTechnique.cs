@@ -96,7 +96,7 @@ namespace SudokuSolver.Core.Solvers.Techniques
                         {
                             var n1 = Candidate.NotSet;
                             var n2 = Candidate.NotSet;
-                            for (int v = 0; v < proxy.SudokuBoard.CandidateCount; v++)
+                            for (var v = 0; v < proxy.SudokuBoard.CandidateCount; v++)
                             {
                                 if (cell.Candidates[v])
                                     if (n1 == Candidate.NotSet)

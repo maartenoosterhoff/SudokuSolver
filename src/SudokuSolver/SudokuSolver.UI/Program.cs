@@ -21,7 +21,7 @@ namespace SudokuSolver.UI
                 }
             );
 
-            SudokuBoard board = builder.Build(SudokuType.Classic9By9);
+            var board = builder.Build(SudokuType.Classic9By9);
             ISudokuBoardProxy proxy = new SudokuBoardProxy(board);
 
             ISudokuParser parser = new SudokuParser();
@@ -30,7 +30,7 @@ namespace SudokuSolver.UI
             // solvable with: naked-multiple/locked-candidates/hidden-single/tableing
             //parser.ParseInto(proxy, "000074316000603840000008500725800034000030050000002798008940000040085900971326485");
             // solvable with:  naked-single/naked-multiple/hidden-single
-            //parser.ParseInto(proxy, "_____4_718__21______7_9_3________4262_______7659________5_6_1______49__541_3_____"); // OK
+            parser.ParseInto(proxy, "_____4_718__21______7_9_3________4262_______7659________5_6_1______49__541_3_____"); // OK
             // solvable with: naked-single/hidden-single/locked-candidates/naked-multiple
             //parser.ParseInto(proxy, "..9.4.8.1.376.....6.............5.....8.1.7.....4.............7.....732.5.4.2.9..");
             // solvable with: naked-single/hidden-single/locked-candidates/naked-multiple/aligned-pair-exclusion
@@ -40,8 +40,8 @@ namespace SudokuSolver.UI
             // unsolvable with: hidden-single/locked-candidates/tableing
             //parser.ParseInto(proxy, ".....725..1.58...3..4..9.....7...59.3...5.1..2....6.....63..8.5.......7.1..7.....");
 
-            // unsolvable with: hidden-single/locked-candidates/naked-multiple
-            parser.ParseInto(proxy, "708000300000201000500000000040000026300080000000100090090600004000070500000000000");
+            //// unsolvable with: hidden-single/locked-candidates/naked-multiple
+            //parser.ParseInto(proxy, "708000300000201000500000000040000026300080000000100090090600004000070500000000000");
 
 
             // Hook events

@@ -74,7 +74,7 @@ namespace SudokuSolver.Core.Models
         {
             if (SudokuBoard.Cells[cellId].Candidates[candidate])
             {
-                SudokuBoard.Cells[cellId].Candidates[candidate] = false;
+                SudokuBoard.Cells[cellId].RemoveCandidate(candidate);
 
                 // Clear cache
                 _candidateAsBitSetCache.Clear();
@@ -97,38 +97,42 @@ namespace SudokuSolver.Core.Models
 
         public BitSet CandidateAsBitSet(int candidate)
         {
-            if (!_candidateAsBitSetCache.ContainsKey(candidate))
+            BitSet set;
+            if (_candidateAsBitSetCache.TryGetValue(candidate, out set))
             {
-                var a = new BitSet(SudokuBoard.CellCount, false);
-                for (int i = 0; i < SudokuBoard.Cells.Length; i++)
-                {
-                    a[i] = SudokuBoard.Cells[i].Candidates[candidate];
-                }
-                //return A;
-                _candidateAsBitSetCache.Add(candidate, a);
-                return a;
+                return set;
             }
 
-            return _candidateAsBitSetCache[candidate];
+            var a = new BitSet(SudokuBoard.CellCount, false);
+            for (var i = 0; i < SudokuBoard.Cells.Length; i++)
+            {
+                a[i] = SudokuBoard.Cells[i].Candidates[candidate];
+            }
+            //return A;
+            _candidateAsBitSetCache.Add(candidate, a);
+            return a;
+
         }
 
         private readonly Dictionary<int, BitSet> _groupAsBitSetCache = new Dictionary<int, BitSet>();
 
         public BitSet GroupAsBitSet(int groupId)
         {
-            if (!_groupAsBitSetCache.ContainsKey(groupId))
+            BitSet set;
+            if (_groupAsBitSetCache.TryGetValue(groupId, out set))
             {
-                var a = new BitSet(SudokuBoard.CellCount, false);
-                foreach (var c in SudokuBoard.Groups[groupId].CellIds)
-                {
-                    a[c] = true;
-                }
-                //return A;
-                _groupAsBitSetCache.Add(groupId, a);
-                return a;
+                return set;
             }
 
-            return _groupAsBitSetCache[groupId];
+            var a = new BitSet(SudokuBoard.CellCount, false);
+            foreach (var c in SudokuBoard.Groups[groupId].CellIds)
+            {
+                a[c] = true;
+            }
+            //return A;
+            _groupAsBitSetCache.Add(groupId, a);
+            return a;
+
         }
 
         public int[] BitSetToCellIdArray(BitSet cellBitSet)
@@ -152,14 +156,16 @@ namespace SudokuSolver.Core.Models
         {
 #if DEBUG
             if (baseLayer.Size != SudokuBoard.CellCount)
+            {
                 throw new InvalidOperationException("Baselayer dimension is not equal to the solution dimension!");
+            }
 #endif
 
             foreach (var c in SudokuBoard.Cells)
             {
                 if (baseLayer[c.Id])
                 {
-                    c.Candidates[candidate] = value;
+                    c.RemoveCandidate(candidate);
                 }
             }
         }
