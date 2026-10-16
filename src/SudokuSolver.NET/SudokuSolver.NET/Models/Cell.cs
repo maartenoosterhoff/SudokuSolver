@@ -20,6 +20,11 @@ internal sealed class Cell(int id, string name, int value, bool[] candidates)
         return Candidates.Count(x => x);
     }
 
+    public int[] GetCurrentCandidates()
+    {
+        return [.. _candidates.Index().Where(x => x.Item).Select(x => x.Index)];
+    }
+
     public void SetValue(int value)
     {
         Value = value;

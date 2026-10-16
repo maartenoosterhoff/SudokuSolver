@@ -1,5 +1,6 @@
 ﻿using SudokuSolver.NET.Engine.Techniques;
 using SudokuSolver.NET.Models;
+using SudokuSolver.NET.Printing;
 
 namespace SudokuSolver.NET.Engine;
 
@@ -7,16 +8,12 @@ internal static partial class SudokuExtensions
 {
     extension(Sudoku sudoku)
     {
-        public void Solve()
+        public void Solve(Action<EngineOptions>? engineOptions = null)
         {
-            // TODO: Introduce options to choose techniques
-            ITechnique[] techniques =
-            [
-                new NakedSingleTechnique(),
-                new HiddenSingleTechnique(),
-                //new NakedMultipleTechnique(),
-                new HiddenMultipleTechnique()
-            ];
+            var options = new EngineOptions();
+            engineOptions?.Invoke(options);
+
+            var techniques = options.Techniques.Build();
 
             var solveStep = TrySolve(sudoku, techniques);
             while (solveStep != null)
@@ -24,21 +21,20 @@ internal static partial class SudokuExtensions
                 // Apply step
                 ApplySolveStep(sudoku, solveStep);
 
+                if (options.DisplayBetweenSteps)
+                {
+                    Console.WriteLine(sudoku.Print());
+                }
+
                 // Try another solve
                 solveStep = TrySolve(sudoku, techniques);
             }
         }
     }
 
-    private static SolveStep? TrySolve(Sudoku sudoku, ITechnique[] techniques)
+    private static SolveStep? TrySolve(Sudoku sudoku, IEnumerable<ITechnique> techniques)
     {
-        foreach (var technique in techniques)
-        {
-            var solveStep = technique.Solve(sudoku);
-            if (solveStep != null)
-                return solveStep;
-        }
-        return null;
+        return techniques.Select(technique => technique.Solve(sudoku)).FirstOrDefault(x => x is not null);
     }
 
     private static void ApplySolveStep(Sudoku sudoku, SolveStep solveStep)

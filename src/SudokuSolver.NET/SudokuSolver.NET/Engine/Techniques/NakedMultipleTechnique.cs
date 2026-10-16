@@ -49,7 +49,7 @@ internal sealed class NakedMultipleTechnique : ITechnique
             }
 
             var nakedDoubleLayer = selectedLayer & !unselectedLayer;
-            nakedDoubleLayer = nakedDoubleLayer & sudoku.GroupAsBitSet(@group.Id);
+            nakedDoubleLayer &= sudoku.GroupAsBitSet(group.Id);
             if (nakedDoubleLayer.Count == requiredCandidateCount)
             {
                 var stepTaken = false;
@@ -111,4 +111,32 @@ internal sealed class NakedMultipleTechnique : ITechnique
 
         return null;
     }
+
+    public record Iteration(int RequiredCandidateCount, Group Group, BitSet Candidates);
+
+    //public static class Iterator
+    //{
+    //    public static IEnumerable<Iteration> Get(Sudoku sudoku)
+    //    {
+    //        var groupsAndCandidates =
+    //            from requiredCandidateCount in Enumerable.Range(2, sudoku.CandidateCount)
+    //            where requiredCandidateCount <
+    //                  sudoku.CandidateCount -
+    //                  1 // TODO: Eliminate this by correctly calculate the range-size in the 1st 'from ... in ...'
+    //            from @group in sudoku.Groups
+    //            select new { requiredCandidateCount, @group };
+
+    //        return
+    //            // Try all cells on the board
+    //            from cell in sudoku.Cells
+    //            // Where the cell doesn't contain a value yet
+    //            where cell.Value == Candidate.NotSet
+    //            // Take only cells which have a single candidate left
+    //            where cell.CurrentCandidateCount() == 1
+    //            // Loop through all candidates
+    //            from candidateValue in Enumerable.Range(0, sudoku.CandidateCount)
+    //                // Select iteration values
+    //            select new Iteration(cell, candidateValue);
+    //    }
+    //}
 }
