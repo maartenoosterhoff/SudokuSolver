@@ -1,14 +1,32 @@
 ﻿namespace SudokuSolver.NET.Models;
 
-internal sealed class Cell(int id, string name, int value, bool[] candidates)
+internal sealed class Cell
 {
-    public int Id { get; } = id;
-    public int Value { get; private set; } = value;
+    private readonly int _originalValue;
 
-    private readonly List<bool> _originalCandidates = candidates.ToList();
-    private readonly List<bool> _candidates = candidates.ToList();
-    public IReadOnlyList<bool> Candidates => _candidates.AsReadOnly();
-    public string Name { get; } = name;
+    private readonly List<bool> _originalCandidates;
+    private readonly List<bool> _candidates;
+
+    public Cell(int id, string name, int value, bool[] candidates)
+    {
+        Id = id;
+        Value = value;
+        _candidates = candidates.ToList();
+        Name = name;
+
+        // Readonly wrapper for external usage.
+        Candidates = _candidates.AsReadOnly();
+
+        // Backup values, used when resetting
+        _originalValue = value;
+        _originalCandidates = candidates.ToList();
+    }
+
+    public int Id { get; }
+    public int Value { get; private set; }
+    public string Name { get; }
+
+    public IReadOnlyList<bool> Candidates { get; }
 
     public override string ToString()
     {
@@ -44,6 +62,7 @@ internal sealed class Cell(int id, string name, int value, bool[] candidates)
 
     public void Reset()
     {
+        Value = _originalValue;
         _candidates.Clear();
         _candidates.AddRange(_originalCandidates);
     }

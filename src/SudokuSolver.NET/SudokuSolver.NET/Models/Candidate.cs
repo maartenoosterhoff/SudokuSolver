@@ -6,6 +6,6 @@ internal static class Candidate
 
     public static string PrintValue(int value)
     {
-        return value <= 8 ? $"{value + 1}" : $"{(char)((value - 9) + 'A')}";
+        return value <= 8 ? $"{value + 1}" : $"{(char)(value - 9 + 'A')}";
     }
 }

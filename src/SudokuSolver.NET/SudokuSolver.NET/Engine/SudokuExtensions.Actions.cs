@@ -13,6 +13,8 @@ internal static partial class SudokuExtensions
             {
                 cell.Reset();
             }
+
+            sudoku.GetCandidateBitSetCache().Clear();
         }
 
         public void SetCell(int cellId, int value)
@@ -30,7 +32,7 @@ internal static partial class SudokuExtensions
                 sudoku.RemoveCandidate(candidateCellId, value);
             }
 
-            // Clear cache
+            // Clear cache completely
             sudoku.GetCandidateBitSetCache().Clear();
         }
 
@@ -43,10 +45,8 @@ internal static partial class SudokuExtensions
 
             sudoku.Cells[cellId].RemoveCandidate(candidate);
 
-            // Clear cache
-            sudoku.GetCandidateBitSetCache().Clear();
-
-            //OnCellCandidateRemoved(cellId, candidate);
+            // Remove cache-item for this candidate.
+            sudoku.GetCandidateBitSetCache().Remove(candidate, out _);
         }
     }
 }
