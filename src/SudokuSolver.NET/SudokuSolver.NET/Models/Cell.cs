@@ -11,7 +11,7 @@ internal sealed class Cell
     {
         Id = id;
         Value = value;
-        _candidates = candidates.ToList();
+        _candidates = [.. candidates];
         Name = name;
 
         // Readonly wrapper for external usage.
@@ -19,7 +19,7 @@ internal sealed class Cell
 
         // Backup values, used when resetting
         _originalValue = value;
-        _originalCandidates = candidates.ToList();
+        _originalCandidates = [.. candidates];
     }
 
     public int Id { get; }
@@ -38,7 +38,7 @@ internal sealed class Cell
         return Candidates.Count(x => x);
     }
 
-    public int[] GetCurrentCandidates()
+    public int[] GetCurrentCandidateValues()
     {
         return [.. _candidates.Index().Where(x => x.Item).Select(x => x.Index)];
     }

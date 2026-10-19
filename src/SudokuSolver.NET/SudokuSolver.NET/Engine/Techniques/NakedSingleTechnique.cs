@@ -44,7 +44,7 @@ internal sealed class NakedSingleTechnique : ITechnique
     {
         public static int? IsValid(Iteration iteration)
         {
-            var candidates = iteration.Cell.GetCurrentCandidates();
+            var candidates = iteration.Cell.GetCurrentCandidateValues();
             if (candidates.Length == 1)
             {
                 return candidates[0];

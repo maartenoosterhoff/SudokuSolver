@@ -23,13 +23,13 @@ internal static partial class SudokuExtensions
 
             //OnCellValueSet(cellId, value);
 
-            var cellIdsWithCandidatesToUnset = from g in FindGroupsForCell(sudoku, cellId)
-                                               from c in g.CellIds
-                                               where c != cellId
-                                               select c;
-            foreach (var candidateCellId in cellIdsWithCandidatesToUnset)
+            var cellsWithCandidatesToUnset = from @group in sudoku.GroupCells[sudoku.Cells[cellId]]
+                                             from cell in @group.Cells
+                                             where cell.Id != cellId
+                                             select cell;
+            foreach (var cell in cellsWithCandidatesToUnset)
             {
-                sudoku.RemoveCandidate(candidateCellId, value);
+                sudoku.RemoveCandidate(cell, value);
             }
 
             // Clear cache completely
@@ -44,6 +44,19 @@ internal static partial class SudokuExtensions
             }
 
             sudoku.Cells[cellId].RemoveCandidate(candidate);
+
+            // Remove cache-item for this candidate.
+            sudoku.GetCandidateBitSetCache().Remove(candidate, out _);
+        }
+
+        public void RemoveCandidate(Cell cell, int candidate)
+        {
+            if (!cell.Candidates[candidate])
+            {
+                return;
+            }
+
+            cell.RemoveCandidate(candidate);
 
             // Remove cache-item for this candidate.
             sudoku.GetCandidateBitSetCache().Remove(candidate, out _);

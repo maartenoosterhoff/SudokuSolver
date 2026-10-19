@@ -76,7 +76,8 @@ internal class SudokuBuilder
                             gId++,
                             $"R{r + 1}",
 
-                            [.. Enumerable.Range(0, dim).Select(c => cells[(r * dim) + c].Id)]
+                            [.. Enumerable.Range(0, dim).Select(c => cells[(r * dim) + c].Id)],
+                            [.. Enumerable.Range(0, dim).Select(c => cells[(r * dim) + c])]
                         );
         groups.AddRange(rowGroups);
 
@@ -85,7 +86,8 @@ internal class SudokuBuilder
                         select new PartialGroup(
                             gId++,
                             $"C{c + 1}",
-                            [.. Enumerable.Range(0, dim).Select(r => cells[(r * dim) + c].Id)]
+                            [.. Enumerable.Range(0, dim).Select(r => cells[(r * dim) + c].Id)],
+                            [.. Enumerable.Range(0, dim).Select(r => cells[(r * dim) + c])]
                         );
         groups.AddRange(colGroups);
 
@@ -101,6 +103,11 @@ internal class SudokuBuilder
                                   from r in Enumerable.Range(r0, dimBlock)
                                   from c in Enumerable.Range(c0, dimBlock)
                                   select cells[(r * dim) + c].Id
+                              ],
+                                                            [ ..
+                                  from r in Enumerable.Range(r0, dimBlock)
+                                  from c in Enumerable.Range(c0, dimBlock)
+                                  select cells[(r * dim) + c]
                               ]
                          );
         groups.AddRange(blockGroups);
@@ -186,11 +193,11 @@ internal class SudokuBuilder
             }
             overlapGroups[g.Id] = false;
 
-            groups.Add(new Group(g.Id, g.Name, g.CellIds, overlapGroups));
+            groups.Add(new Group(g.Id, g.Name, /*g.CellIds, */g.Cells, overlapGroups));
         }
 
         return [.. groups];
     }
 
-    private sealed record PartialGroup(int Id, string Name, ImmutableArray<int> CellIds);
+    private sealed record PartialGroup(int Id, string Name, ImmutableArray<int> CellIds, ImmutableArray<Cell> Cells);
 }

@@ -10,12 +10,12 @@ internal static partial class SudokuExtensions
     {
         public ImmutableArray<Group> FindGroupsForCell(int cellId)
         {
-            return [.. sudoku.Groups.Where(g => g.HasCell(cellId))];
+            return [.. sudoku.Groups.Where(g => g.Cells.Any(x => x.Id == cellId))];
         }
 
         public bool GroupHasNumber(int groupId, int value)
         {
-            return sudoku.Groups[groupId].CellIds.Any(c => sudoku.Cells[c].Value == value);
+            return sudoku.Groups[groupId].Cells.Any(c => c.Value == value);
         }
 
         public BitSet GroupAsBitSet(int groupId)
@@ -25,9 +25,9 @@ internal static partial class SudokuExtensions
                 _ =>
                 {
                     var a = new BitSet(sudoku.CellCount, false);
-                    foreach (var c in sudoku.Groups[groupId].CellIds)
+                    foreach (var cell in sudoku.Groups[groupId].Cells)
                     {
-                        a[c] = true;
+                        a[cell.Id] = true;
                     }
 
                     return a;

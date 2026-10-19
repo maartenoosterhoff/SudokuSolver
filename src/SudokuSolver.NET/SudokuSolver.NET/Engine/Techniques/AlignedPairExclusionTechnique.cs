@@ -79,7 +79,7 @@ internal sealed class AlignedPairExclusionTechnique : ITechnique
                 if (!outLayer[lp]) continue;
                 
                 // Only take cells with 2 candidates left
-                var candidates = sudoku.Cells[lp].GetCurrentCandidates();
+                var candidates = sudoku.Cells[lp].GetCurrentCandidateValues();
                 if (candidates.Length != 2) continue;
                 var n1 = candidates[0];
                 var n2 = candidates[1];

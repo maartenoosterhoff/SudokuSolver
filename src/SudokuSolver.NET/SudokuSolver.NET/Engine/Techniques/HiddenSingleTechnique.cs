@@ -37,7 +37,7 @@ internal sealed class HiddenSingleTechnique : ITechnique
                 // Try every group in the sudoku
                 from @group in sudoku.Groups
                 // Where the group doesn't contain the candidate yet
-                where @group.CellIds.All(c => sudoku.Cells[c].Value != candidateValue)
+                where @group.Cells.All(c => c.Value != candidateValue)
                 // Select iteration values
                 select new Iteration(@group, candidateValue);
         }
@@ -48,12 +48,12 @@ internal sealed class HiddenSingleTechnique : ITechnique
         public static Cell? GetLastApplicableCell(Sudoku sudoku, Iteration iteration)
         {
             // Deduce which cells in the group are available to place the candidate
-            var applicableCells = iteration.Group.CellIds.Where(c => sudoku.Cells[c].Candidates[iteration.CandidateValue]).ToArray();
+            var applicableCells = iteration.Group.Cells.Where(c => c.Candidates[iteration.CandidateValue]).ToArray();
             // Make sure there is only a single cell in the group that is available
             if (applicableCells.Length == 1)
             {
                 // Remember which cell it is
-                return sudoku.Cells[applicableCells.First()];
+                return applicableCells[0];
             }
 
             return null;
