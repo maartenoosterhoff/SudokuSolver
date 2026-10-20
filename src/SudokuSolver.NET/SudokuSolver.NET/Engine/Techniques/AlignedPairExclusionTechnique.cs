@@ -3,14 +3,14 @@ using SudokuSolver.NET.Models;
 
 namespace SudokuSolver.NET.Engine.Techniques;
 
-internal sealed class AlignedPairExclusionTechnique : ITechnique
+internal sealed class AlignedPairExclusionTechnique : TechniqueBase<AlignedPairExclusionTechnique.IteratorImpl, AlignedPairExclusionTechnique.SolverImpl>
 {
-    public SolveStep? Solve(Sudoku sudoku)
+    public override SolveStep? Solve(Sudoku sudoku)
     {
-        var items = Iterator.Get(sudoku);
+        var items = Iterator.Iterate(sudoku);
         var query =
             from item in items
-            let solveStep = Calculator.Get(sudoku, item)
+            let solveStep = Solver.Solve(sudoku, item)
             where solveStep is not null
             select solveStep;
 
@@ -19,9 +19,9 @@ internal sealed class AlignedPairExclusionTechnique : ITechnique
 
     public record Iteration(BitSet InLayer, BitSet OutLayer, int Cell1Index, int Cell2Index);
 
-    public static class Iterator
+    public class IteratorImpl
     {
-        public static IEnumerable<Iteration> Get(Sudoku sudoku)
+        public IEnumerable<Iteration> Iterate(Sudoku sudoku)
         {
             return
 
@@ -51,9 +51,9 @@ internal sealed class AlignedPairExclusionTechnique : ITechnique
         }
     }
 
-    public static class Calculator
+    public class SolverImpl
     {
-        public static SolveStep? Get(Sudoku sudoku, Iteration iteration)
+        public SolveStep? Solve(Sudoku sudoku, Iteration iteration)
         {
             var c1 = sudoku.Cells[iteration.Cell1Index];
             var c2 = sudoku.Cells[iteration.Cell2Index];
@@ -77,7 +77,7 @@ internal sealed class AlignedPairExclusionTechnique : ITechnique
             for (var lp = 0; lp < outLayer.Size; lp++)
             {
                 if (!outLayer[lp]) continue;
-                
+
                 // Only take cells with 2 candidates left
                 var candidates = sudoku.Cells[lp].GetCurrentCandidateValues();
                 if (candidates.Length != 2) continue;
@@ -115,12 +115,12 @@ internal sealed class AlignedPairExclusionTechnique : ITechnique
             }
 
             var items = from x in solveStepItems
-                select new SolveStepItem(
-                    x.Value.ToArray(),
-                    x.Key,
-                    SolveStepItemType.CandidateRemoval,
-                    "Aligned Pair Exclusion",
-                    $"Found an Aligned Pair Exclusion in cells {string.Join(",", x.Value.Select(c => sudoku.Cells[c].Name))}, removing candidate {Candidate.PrintValue(x.Key)}");
+                        select new SolveStepItem(
+                            x.Value.ToArray(),
+                            x.Key,
+                            SolveStepItemType.CandidateRemoval,
+                            "Aligned Pair Exclusion",
+                            $"Found an Aligned Pair Exclusion in cells {string.Join(",", x.Value.Select(c => sudoku.Cells[c].Name))}, removing candidate {Candidate.PrintValue(x.Key)}");
 
             return new SolveStep([.. items]);
 

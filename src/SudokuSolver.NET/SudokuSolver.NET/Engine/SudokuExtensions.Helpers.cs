@@ -13,7 +13,7 @@ internal static partial class SudokuExtensions
             return [.. sudoku.Groups.Where(g => g.Cells.Any(x => x.Id == cellId))];
         }
 
-        public bool GroupHasNumber(int groupId, int value)
+        public bool GroupHasCandidateValueSet(int groupId, int value)
         {
             return sudoku.Groups[groupId].Cells.Any(c => c.Value == value);
         }

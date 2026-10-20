@@ -2,41 +2,32 @@
 
 namespace SudokuSolver.NET.Engine.Techniques;
 
-internal sealed class LockedCandidateTechnique : ITechnique
+internal sealed class LockedCandidateTechnique : TechniqueBase<LockedCandidateTechnique.IteratorImpl, LockedCandidateTechnique.SolverImpl>
 {
-    public SolveStep? Solve(Sudoku sudoku)
+    public override SolveStep? Solve(Sudoku sudoku)
     {
-        var items = Iterator.Get(sudoku);
+        var items = Iterator.Iterate(sudoku);
         var query =
             from item in items
-            let candidateBitset = Calculator.GetRemovableCandidates(sudoku, item)
-            where candidateBitset is not null
-
-            select new SolveStep(
-            [
-                new SolveStepItem(
-                    sudoku.YieldCellIds(candidateBitset),
-                    item.CandidateValue,
-                    SolveStepItemType.CandidateRemoval,
-                    "Locked Candidate",
-                    $"Found a Locked Candidate {Candidate.PrintValue(item.CandidateValue)} in group {item.GroupA.Name} vs group {item.GroupB.Name}, removing candidate from cell(s) {sudoku.YieldCellsDescription(candidateBitset)}")
-            ]);
+            let solveStep = Solver.Solve(sudoku, item)
+            where solveStep is not null
+            select solveStep;
 
         return query.FirstOrDefault();
     }
 
     public record Iteration(int CandidateValue, Group GroupA, Group GroupB);
 
-    public static class Iterator
+    public class IteratorImpl
     {
-        public static IEnumerable<Iteration> Get(Sudoku sudoku)
+        public IEnumerable<Iteration> Iterate(Sudoku sudoku)
         {
             return
                 from candidateValue in Enumerable.Range(0, sudoku.CandidateCount)
                 from groupA in sudoku.Groups
-                where !sudoku.GroupHasNumber(groupA.Id, candidateValue)
+                where !sudoku.GroupHasCandidateValueSet(groupA.Id, candidateValue)
                 from groupB in sudoku.Groups
-                where !sudoku.GroupHasNumber(groupB.Id, candidateValue)
+                where !sudoku.GroupHasCandidateValueSet(groupB.Id, candidateValue)
                 where groupB.Id != groupA.Id
                 where groupA.OverlapGroups[groupB.Id]
 
@@ -45,9 +36,9 @@ internal sealed class LockedCandidateTechnique : ITechnique
         }
     }
 
-    public static class Calculator
+    public class SolverImpl
     {
-        public static BitSet? GetRemovableCandidates(Sudoku sudoku, Iteration iteration)
+        public SolveStep? Solve(Sudoku sudoku, Iteration iteration)
         {
             var candidateLayer = sudoku.CandidateAsBitSet(iteration.CandidateValue);
             var bitsetGroupA = sudoku.GroupAsBitSet(iteration.GroupA.Id);
@@ -65,7 +56,20 @@ internal sealed class LockedCandidateTechnique : ITechnique
 
             // D = group[groupId2] - B;
             var d = candidateLayer & bitsetGroupB & !bitsetGroupA;
-            return d.IsEmpty ? null : d;
+            if (d.IsEmpty)
+            {
+                return null;
+            }
+
+            return new SolveStep(
+            [
+                new SolveStepItem(
+                    sudoku.YieldCellIds(d),
+                    iteration.CandidateValue,
+                    SolveStepItemType.CandidateRemoval,
+                    "Locked Candidate",
+                    $"Found a Locked Candidate {Candidate.PrintValue(iteration.CandidateValue)} in group {iteration.GroupA.Name} vs group {iteration.GroupB.Name}, removing candidate from cell(s) {sudoku.YieldCellsDescription(d)}")
+            ]);
         }
     }
 }

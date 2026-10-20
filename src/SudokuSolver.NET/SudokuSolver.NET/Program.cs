@@ -36,6 +36,7 @@ internal class Program
                     //.Except(Technique.NakedMultiple)
                     //.Except(Technique.HiddenMultiple)
                     //.Except(Technique.LockedCandidate)
+                    //.Except(Technique.AlignedPairExclusion)
                     ;
             });
         //sudoku.Solve();

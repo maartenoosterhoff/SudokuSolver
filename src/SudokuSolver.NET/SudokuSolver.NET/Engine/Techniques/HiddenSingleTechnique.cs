@@ -2,34 +2,25 @@ using SudokuSolver.NET.Models;
 
 namespace SudokuSolver.NET.Engine.Techniques;
 
-internal sealed class HiddenSingleTechnique : ITechnique
+internal sealed class HiddenSingleTechnique : TechniqueBase<HiddenSingleTechnique.IteratorImpl, HiddenSingleTechnique.SolverImpl>
 {
-    public SolveStep? Solve(Sudoku sudoku)
+    public override SolveStep? Solve(Sudoku sudoku)
     {
-        var items = Iterator.Get(sudoku);
+        var items = Iterator.Iterate(sudoku);
         var query =
             from item in items
-            let lastCell = Calculator.GetLastApplicableCell(sudoku, item)
-            where lastCell is not null
-
-            select new SolveStep(
-            [
-                new SolveStepItem(
-                    [lastCell.Id],
-                    item.CandidateValue,
-                    SolveStepItemType.CandidateConfirmation,
-                    "Hidden Single",
-                    $"In group {item.Group.Name} the cell {lastCell.Name} is the only cell for candidate {Candidate.PrintValue(item.CandidateValue)}.")
-            ]);
+            let solveStep = Solver.Solve(sudoku, item)
+            where solveStep is not null
+            select solveStep;
 
         return query.FirstOrDefault();
     }
 
     public record Iteration(Group Group, int CandidateValue);
 
-    public static class Iterator
+    public class IteratorImpl
     {
-        public static IEnumerable<Iteration> Get(Sudoku sudoku)
+        public IEnumerable<Iteration> Iterate(Sudoku sudoku)
         {
             return
                 // Try all candidates
@@ -43,9 +34,9 @@ internal sealed class HiddenSingleTechnique : ITechnique
         }
     }
 
-    public static class Calculator
+    public class SolverImpl
     {
-        public static Cell? GetLastApplicableCell(Sudoku sudoku, Iteration iteration)
+        public SolveStep? Solve(Sudoku sudoku, Iteration iteration)
         {
             // Deduce which cells in the group are available to place the candidate
             var applicableCells = iteration.Group.Cells.Where(c => c.Candidates[iteration.CandidateValue]).ToArray();
@@ -53,7 +44,17 @@ internal sealed class HiddenSingleTechnique : ITechnique
             if (applicableCells.Length == 1)
             {
                 // Remember which cell it is
-                return applicableCells[0];
+                var lastCell = applicableCells[0];
+
+                return new SolveStep(
+                [
+                    new SolveStepItem(
+                        [lastCell.Id],
+                        iteration.CandidateValue,
+                        SolveStepItemType.CandidateConfirmation,
+                        "Hidden Single",
+                        $"In group {iteration.Group.Name} the cell {lastCell.Name} is the only cell for candidate {Candidate.PrintValue(iteration.CandidateValue)}.")
+                ]);
             }
 
             return null;

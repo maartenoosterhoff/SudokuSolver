@@ -2,33 +2,25 @@ using SudokuSolver.NET.Models;
 
 namespace SudokuSolver.NET.Engine.Techniques;
 
-internal sealed class NakedSingleTechnique : ITechnique
+internal sealed class NakedSingleTechnique : TechniqueBase<NakedSingleTechnique.IteratorImpl, NakedSingleTechnique.SolverImpl>
 {
-    public SolveStep? Solve(Sudoku sudoku)
+    public override SolveStep? Solve(Sudoku sudoku)
     {
-        var items = Iterator.Get(sudoku);
+        var items = Iterator.Iterate(sudoku);
         var query =
             from item in items
-            let candidateValue = Calculator.IsValid(item)
-            where candidateValue is not null
-            select new SolveStep(
-            [
-                new SolveStepItem(
-                    [item.Cell.Id],
-                    candidateValue.Value,
-                    SolveStepItemType.CandidateConfirmation,
-                    "Naked Single",
-                    $"The cell {item.Cell.Name} only has a single candidate left, value {Candidate.PrintValue(candidateValue.Value)}.")
-            ]);
+            let solveStep = Solver.Solve(item)
+            where solveStep is not null
+            select solveStep;
 
         return query.FirstOrDefault();
     }
 
     public record Iteration(Cell Cell);
 
-    public static class Iterator
+    public class IteratorImpl
     {
-        public static IEnumerable<Iteration> Get(Sudoku sudoku)
+        public IEnumerable<Iteration> Iterate(Sudoku sudoku)
         {
             return
                 // Try all cells on the board
@@ -40,14 +32,23 @@ internal sealed class NakedSingleTechnique : ITechnique
         }
     }
 
-    public static class Calculator
+    public class SolverImpl
     {
-        public static int? IsValid(Iteration iteration)
+        public SolveStep? Solve(Iteration iteration)
         {
             var candidates = iteration.Cell.GetCurrentCandidateValues();
             if (candidates.Length == 1)
             {
-                return candidates[0];
+                var candidateValue = candidates[0];
+                return new SolveStep(
+                [
+                    new SolveStepItem(
+                        [iteration.Cell.Id],
+                        candidateValue,
+                        SolveStepItemType.CandidateConfirmation,
+                        "Naked Single",
+                        $"The cell {iteration.Cell.Name} only has a single candidate left, value {Candidate.PrintValue(candidateValue)}.")
+                ]);
             }
 
             return null;
