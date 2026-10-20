@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="SudokuSolver.NET.Tests/SudokuSolver.NET.Tests.csproj" Id="36238c94-2cbb-41f9-bea2-8aeeb726e09f" />
   <Project Path="SudokuSolver.NET/SudokuSolver.NET.csproj" />
 </Solution>

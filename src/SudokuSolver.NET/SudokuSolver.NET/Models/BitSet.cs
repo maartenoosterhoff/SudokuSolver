@@ -81,7 +81,9 @@ internal sealed class BitSet
         {
 #if DEBUG
             if (index >= Size)
-                throw new ArgumentException(nameof(index));
+            {
+                throw new ArgumentException("Value of index is too large for the bitset.", nameof(index));
+            }
 #endif
 
             var arrayIndex = GetArrayIndexForIndex(index);
@@ -93,7 +95,9 @@ internal sealed class BitSet
         {
 #if DEBUG
             if (index >= Size)
-                throw new ArgumentException(nameof(index));
+            {
+                throw new ArgumentException("Value of index is too large for the bitset.", nameof(index));
+            }
 #endif
 
             var arrayIndex = GetArrayIndexForIndex(index);
@@ -116,7 +120,9 @@ internal sealed class BitSet
     public static BitSet operator &(BitSet a, BitSet b)
     {
         if (a.Size != b.Size)
-            throw new Exception("Internal error: sizes of bitsets are not equal!");
+        {
+            throw new NotSupportedException("Sizes of bitsets are not equal.");
+        }
 
         var andResult = new BitSet(a);
         for (var i = 0; i < andResult._arraySize; i++)
@@ -131,7 +137,9 @@ internal sealed class BitSet
     public static BitSet operator |(BitSet a, BitSet b)
     {
         if (a.Size != b.Size)
-            throw new Exception("Internal error: sizes of bitsets are not equal!");
+        {
+            throw new NotSupportedException("Sizes of bitsets are not equal.");
+        }
 
         var orResult = new BitSet(a);
         for (var i = 0; i < orResult._arraySize; i++)
@@ -146,7 +154,9 @@ internal sealed class BitSet
     public static BitSet operator ^(BitSet a, BitSet b)
     {
         if (a.Size != b.Size)
-            throw new Exception("Internal error: sizes of bitsets are not equal!");
+        {
+            throw new NotSupportedException("Sizes of bitsets are not equal.");
+        }
 
         var xorResult = new BitSet(a);
         for (var i = 0; i < xorResult._arraySize; i++)
@@ -194,7 +204,9 @@ internal sealed class BitSet
     public BitSet SetWithBase(bool value, BitSet baseLayer)
     {
         if (Size != baseLayer.Size)
-            throw new Exception("Internal error: dimensions of bitsets are not equal!");
+        {
+            throw new NotSupportedException("Dimensions of bitsets are not equal.");
+        }
 
         var resultBitSet = new BitSet(this);
         for (var i = 0; i < resultBitSet.Size; i++)
