@@ -15,8 +15,8 @@ internal static partial class SudokuExtensions
 
             var techniques = options.Techniques.Build();
 
-            var solveStep = TrySolve(sudoku, techniques);
-            while (solveStep != null)
+            SolveStep? solveStep;
+            while ((solveStep = TrySolve(sudoku, techniques)) is not null)
             {
                 // Apply step
                 ApplySolveStep(sudoku, solveStep);
@@ -25,9 +25,6 @@ internal static partial class SudokuExtensions
                 {
                     Console.WriteLine(sudoku.Print());
                 }
-
-                // Try another solve
-                solveStep = TrySolve(sudoku, techniques);
             }
         }
     }
