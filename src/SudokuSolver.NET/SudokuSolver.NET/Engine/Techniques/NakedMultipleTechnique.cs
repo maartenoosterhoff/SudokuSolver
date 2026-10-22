@@ -2,23 +2,11 @@
 
 namespace SudokuSolver.NET.Engine.Techniques;
 
-internal sealed class NakedMultipleTechnique : TechniqueBase<NakedMultipleTechnique.IteratorImpl, NakedMultipleTechnique.SolverImpl>
+internal sealed class NakedMultipleTechnique : TechniqueBase<NakedMultipleTechnique.IteratorImpl, NakedMultipleTechnique.SolverImpl, NakedMultipleTechnique.Iteration>
 {
-    public override SolveStep? Solve(Sudoku sudoku)
-    {
-        var items = Iterator.Iterate(sudoku);
-        var query =
-            from item in items
-            let solveStep = Solver.Solve(sudoku, item)
-            where solveStep is not null
-            select solveStep;
+    public sealed record Iteration(Sudoku Sudoku, Group Group, BitSet B);
 
-        return query.FirstOrDefault();
-    }
-
-    public record Iteration(Sudoku Sudoku, Group Group, BitSet B);
-
-    public class IteratorImpl
+    public sealed class IteratorImpl : IIterator<Iteration>
     {
         public IEnumerable<Iteration> Iterate(Sudoku sudoku)
         {
@@ -59,7 +47,7 @@ internal sealed class NakedMultipleTechnique : TechniqueBase<NakedMultipleTechni
         }
     }
 
-    public  class SolverImpl
+    public sealed class SolverImpl : ISolver<Iteration>
     {
         private static readonly Dictionary<int, string> TitleMapper = new()
         {

@@ -2,23 +2,11 @@
 
 namespace SudokuSolver.NET.Engine.Techniques;
 
-internal sealed class LockedCandidateTechnique : TechniqueBase<LockedCandidateTechnique.IteratorImpl, LockedCandidateTechnique.SolverImpl>
+internal sealed class LockedCandidateTechnique : TechniqueBase<LockedCandidateTechnique.IteratorImpl, LockedCandidateTechnique.SolverImpl, LockedCandidateTechnique.Iteration>
 {
-    public override SolveStep? Solve(Sudoku sudoku)
-    {
-        var items = Iterator.Iterate(sudoku);
-        var query =
-            from item in items
-            let solveStep = Solver.Solve(sudoku, item)
-            where solveStep is not null
-            select solveStep;
+    public sealed record Iteration(int CandidateValue, Group GroupA, Group GroupB);
 
-        return query.FirstOrDefault();
-    }
-
-    public record Iteration(int CandidateValue, Group GroupA, Group GroupB);
-
-    public class IteratorImpl
+    public sealed class IteratorImpl : IIterator<Iteration>
     {
         public IEnumerable<Iteration> Iterate(Sudoku sudoku)
         {
@@ -36,7 +24,7 @@ internal sealed class LockedCandidateTechnique : TechniqueBase<LockedCandidateTe
         }
     }
 
-    public class SolverImpl
+    public sealed class SolverImpl : ISolver<Iteration>
     {
         public SolveStep? Solve(Sudoku sudoku, Iteration iteration)
         {

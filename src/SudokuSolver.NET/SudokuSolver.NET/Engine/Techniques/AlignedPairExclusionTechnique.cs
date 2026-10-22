@@ -3,23 +3,11 @@ using SudokuSolver.NET.Models;
 
 namespace SudokuSolver.NET.Engine.Techniques;
 
-internal sealed class AlignedPairExclusionTechnique : TechniqueBase<AlignedPairExclusionTechnique.IteratorImpl, AlignedPairExclusionTechnique.SolverImpl>
+internal sealed class AlignedPairExclusionTechnique : TechniqueBase<AlignedPairExclusionTechnique.IteratorImpl, AlignedPairExclusionTechnique.SolverImpl, AlignedPairExclusionTechnique.Iteration>
 {
-    public override SolveStep? Solve(Sudoku sudoku)
-    {
-        var items = Iterator.Iterate(sudoku);
-        var query =
-            from item in items
-            let solveStep = Solver.Solve(sudoku, item)
-            where solveStep is not null
-            select solveStep;
+    public sealed record Iteration(BitSet InLayer, BitSet OutLayer, int Cell1Index, int Cell2Index);
 
-        return query.FirstOrDefault();
-    }
-
-    public record Iteration(BitSet InLayer, BitSet OutLayer, int Cell1Index, int Cell2Index);
-
-    public class IteratorImpl
+    public sealed class IteratorImpl : IIterator<Iteration>
     {
         public IEnumerable<Iteration> Iterate(Sudoku sudoku)
         {
@@ -51,7 +39,7 @@ internal sealed class AlignedPairExclusionTechnique : TechniqueBase<AlignedPairE
         }
     }
 
-    public class SolverImpl
+    public sealed class SolverImpl : ISolver<Iteration>
     {
         public SolveStep? Solve(Sudoku sudoku, Iteration iteration)
         {
